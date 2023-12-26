@@ -104,7 +104,7 @@ module.exports = async (request, response) => {
         const randomIndex = Math.floor(Math.random() * questions.length)
         const question = questions[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `Ваш вопрос: *${question}* 👋🏻`
+        const message = `Рандомая тема: \n\n*${question}* 🎁`
         // Отправляем сообщение обратно
         await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
       }
@@ -112,7 +112,7 @@ module.exports = async (request, response) => {
         const randomIndex = Math.floor(Math.random() * ideasWithEmojis.length)
         const idea = ideasWithEmojis[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `Для вас нашлась идея: *${idea}* 🙌`
+        const message = `Для вас нашлась идея: \n\n*${idea}*`
         // Отправляем сообщение обратно
         await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
       }
