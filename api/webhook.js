@@ -104,7 +104,7 @@ module.exports = async (request, response) => {
         const randomIndex = Math.floor(Math.random() * questions.length)
         const question = questions[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `Рандомая тема: \n\n*${question}* 🎁`
+        const message = `🎁 Рандомая тема: \n\n*"${question}"*`
         // Отправляем сообщение обратно
         await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
       }
