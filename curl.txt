@@ -1,0 +1,5 @@
+curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-tg-node-proxima812.vercel.app/api/webhook"}'
+
+bot-tg-node.vercel.app
+
+curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-proxima812.vercel.app/api/webhook"}'
