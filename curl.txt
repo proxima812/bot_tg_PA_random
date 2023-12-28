@@ -3,3 +3,8 @@ curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQ
 bot-tg-node.vercel.app
 
 curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-proxima812.vercel.app/api/webhook"}'
+
+
+https://soul-tg-bot-proxima812.vercel.app/
+
+curl -X POST https://api.telegram.org/bot6977955174:AAHbQ6CpdIvPnVsJBh14vPFw1iWm6UT38XQ/setWebhook -H "Content-type: application/json" -d '{"url": "https://soul-tg-bot-proxima812.vercel.app/api/webhook"}'
