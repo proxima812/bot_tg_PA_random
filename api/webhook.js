@@ -248,17 +248,19 @@ module.exports = async (request, response) => {
         const message = `🎁 Рандомая тема: \n\n*"${question}"*`
         // Отправляем сообщение обратно
         bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
-          if (!messageIds.has(id)) {
-            messageIds.set(id, [])
-          }
-          messageIds.get(id).push(sentMessage.message_id)
-        })
+          const userId = body.message.from.id // Получаем ID пользователя
 
-        try {
-          await bot.deleteMessage(id, message_id)
-        } catch (error) {
-          console.error('Error deleting message', error.toString())
-        }
+          if (!messageIds.has(id)) {
+            messageIds.set(id, new Map()) // Внутренний Map для id пользователя
+          }
+
+          const userMessages = messageIds.get(id)
+          if (!userMessages.has(userId)) {
+            userMessages.set(userId, [])
+          }
+
+          userMessages.get(userId).push(sentMessage.message_id)
+        })
       }
 
       if (text === '/step11') {
