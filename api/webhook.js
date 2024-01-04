@@ -229,21 +229,15 @@ module.exports = async (request, response) => {
       const username = first_name
 
       // Удаление предыдущих сообщений
-      const userId = body.message.from.id // Получаем ID пользователя
-
-      if (messageIds.has(id) && messageIds.get(id).has(userId)) {
-        messageIds
-          .get(id)
-          .get(userId)
-          .forEach(async (messageId) => {
-            try {
-              await bot.deleteMessage(id, messageId)
-            } catch (error) {
-              console.error('Error deleting message', error.toString())
-            }
-          })
-
-        messageIds.get(id).set(userId, []) // Очищаем массив после удаления
+      if (messageIds.has(id)) {
+        messageIds.get(id).forEach(async (messageId) => {
+          try {
+            await bot.deleteMessage(id, messageId)
+          } catch (error) {
+            console.error('Error deleting message', error.toString())
+          }
+        })
+        messageIds.set(id, [])
       }
 
       // Обработка команды /q для случайного вопроса
@@ -253,20 +247,13 @@ module.exports = async (request, response) => {
         // Форматирование сообщения с жирным шрифтом для вопроса
         const message = `🎁 Рандомая тема: \n\n*"${question}"*`
         // Отправляем сообщение обратно
-        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
-          const userId = body.message.from.id // Получаем ID пользователя
+        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
 
-          if (!messageIds.has(id)) {
-            messageIds.set(id, new Map()) // Внутренний Map для id пользователя
-          }
-
-          const userMessages = messageIds.get(id)
-          if (!userMessages.has(userId)) {
-            userMessages.set(userId, [])
-          }
-
-          userMessages.get(userId).push(sentMessage.message_id)
-        })
+        try {
+          await bot.deleteMessage(id, message_id)
+        } catch (error) {
+          console.error('Error deleting message', error.toString())
+        }
       }
 
       if (text === '/step11') {
@@ -283,12 +270,7 @@ module.exports = async (request, response) => {
         // Форматирование сообщения с жирным шрифтом для вопроса
         const message = `*${username}!*\n\n💡 Для вас нашлась идея: \n\n*${idea}*`
         // Отправляем сообщение обратно
-        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
-          if (!messageIds.has(id)) {
-            messageIds.set(id, [])
-          }
-          messageIds.get(id).push(sentMessage.message_id)
-        })
+        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
 
         try {
           await bot.deleteMessage(id, message_id)
@@ -302,12 +284,7 @@ module.exports = async (request, response) => {
         // Форматирование сообщения с жирным шрифтом для вопроса
         const message = `*${username}!*\n\n🙌 Вам важно прочитать это сегодня: \n\n*${b}*`
         // Отправляем сообщение обратно
-        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
-          if (!messageIds.has(id)) {
-            messageIds.set(id, [])
-          }
-          messageIds.get(id).push(sentMessage.message_id)
-        })
+        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
 
         try {
           await bot.deleteMessage(id, message_id)
@@ -321,12 +298,7 @@ module.exports = async (request, response) => {
         // Форматирование сообщения с жирным шрифтом для вопроса
         const message = `*${username}!*\n\n👤 Ваша установка на день: \n\n*${mood}*`
         // Отправляем сообщение обратно
-        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
-          if (!messageIds.has(id)) {
-            messageIds.set(id, [])
-          }
-          messageIds.get(id).push(sentMessage.message_id)
-        })
+        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
 
         try {
           await bot.deleteMessage(id, message_id)
