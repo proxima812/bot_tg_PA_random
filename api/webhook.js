@@ -247,7 +247,18 @@ module.exports = async (request, response) => {
         // Форматирование сообщения с жирным шрифтом для вопроса
         const message = `🎁 Рандомая тема: \n\n*"${question}"*`
         // Отправляем сообщение обратно
-        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
+        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
+          if (!messageIds.has(id)) {
+            messageIds.set(id, [])
+          }
+          messageIds.get(id).push(sentMessage.message_id)
+        })
+
+        try {
+          await bot.deleteMessage(id, message_id)
+        } catch (error) {
+          console.error('Error deleting message', error.toString())
+        }
       }
 
       if (text === '/step11') {
@@ -262,17 +273,39 @@ module.exports = async (request, response) => {
         const randomIndex = Math.floor(Math.random() * ideasWithEmojis.length)
         const idea = ideasWithEmojis[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `💡 Для вас нашлась идея: \n\n*${idea}*`
+        const message = `*${username}!*\n\n💡 Для вас нашлась идея: \n\n*${idea}*`
         // Отправляем сообщение обратно
-        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
+        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
+          if (!messageIds.has(id)) {
+            messageIds.set(id, [])
+          }
+          messageIds.get(id).push(sentMessage.message_id)
+        })
+
+        try {
+          await bot.deleteMessage(id, message_id)
+        } catch (error) {
+          console.error('Error deleting message', error.toString())
+        }
       }
       if (text === '/b') {
         const randomIndex = Math.floor(Math.random() * quotes.length)
         const b = quotes[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `🙌 Вам важно прочитать это сегодня: \n\n*${b}*`
+        const message = `*${username}!*\n\n🙌 Вам важно прочитать это сегодня: \n\n*${b}*`
         // Отправляем сообщение обратно
-        await bot.sendMessage(id, message, { parse_mode: 'Markdown' })
+        bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
+          if (!messageIds.has(id)) {
+            messageIds.set(id, [])
+          }
+          messageIds.get(id).push(sentMessage.message_id)
+        })
+
+        try {
+          await bot.deleteMessage(id, message_id)
+        } catch (error) {
+          console.error('Error deleting message', error.toString())
+        }
       }
       if (text === '/set') {
         const randomIndex = Math.floor(Math.random() * setMood.length)
