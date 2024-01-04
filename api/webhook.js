@@ -278,7 +278,7 @@ module.exports = async (request, response) => {
         const randomIndex = Math.floor(Math.random() * setMood.length)
         const mood = setMood[randomIndex]
         // Форматирование сообщения с жирным шрифтом для вопроса
-        const message = `${username}! - 👤 Ваша установка на день: \n\n*${mood}*`
+        const message = `*${username}!* - 👤 Ваша установка на день: \n\n*${mood}*`
         // Отправляем сообщение обратно
         bot.sendMessage(id, message, { parse_mode: 'Markdown' }).then((sentMessage) => {
           if (!messageIds.has(id)) {
