@@ -229,15 +229,21 @@ module.exports = async (request, response) => {
       const username = first_name
 
       // Удаление предыдущих сообщений
-      if (messageIds.has(id)) {
-        messageIds.get(id).forEach(async (messageId) => {
-          try {
-            await bot.deleteMessage(id, messageId)
-          } catch (error) {
-            console.error('Error deleting message', error.toString())
-          }
-        })
-        messageIds.set(id, [])
+      const userId = body.message.from.id // Получаем ID пользователя
+
+      if (messageIds.has(id) && messageIds.get(id).has(userId)) {
+        messageIds
+          .get(id)
+          .get(userId)
+          .forEach(async (messageId) => {
+            try {
+              await bot.deleteMessage(id, messageId)
+            } catch (error) {
+              console.error('Error deleting message', error.toString())
+            }
+          })
+
+        messageIds.get(id).set(userId, []) // Очищаем массив после удаления
       }
 
       // Обработка команды /q для случайного вопроса
