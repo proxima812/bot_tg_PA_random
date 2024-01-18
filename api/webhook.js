@@ -5,6 +5,7 @@ process.env.NTBA_FIX_319 = 'test'
 // Подключаем библиотеку Telegram Bot API
 const TelegramBot = require('node-telegram-bot-api')
 
+
 // Массив случайных вопросов
 const questions = [
   'Какие используете инструменты в борьбе с прокрастинацией?',
