@@ -1,14 +1,14 @@
 // https://github.com/yagop/node-telegram-bot-api/issues/319#issuecomment-324963294
 // Fixes an error with Promise cancellation
 process.env.NTBA_FIX_319 = "test"
+const TOKEN = process.env.API_TOKEN
 const TelegramBot = require("node-telegram-bot-api")
 
-const questions = require("./questions")
-const ideasWithEmojis = require("./ideasWithEmojis")
-const setMood = require("./setMood")
-const quotes = require("./quotes")
+const questions = require("./questions.js")
+const ideasWithEmojis = require("./ideasWithEmojis.js")
+const setMood = require("./setMood.js")
+const quotes = require("./quotes.js")
 
-const TOKEN = process.env.API_TOKEN
 // Подключаем библиотеку Telegram Bot API
 const bot = new TelegramBot(TOKEN)
 
