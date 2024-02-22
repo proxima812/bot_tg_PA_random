@@ -1,13 +1,7 @@
-curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-tg-node-proxima812.vercel.app/api/webhook"}'
+Для node-telegram-bot-api в консоле:
 
-bot-tg-node.vercel.app
+curl -X POST https://api.telegram.org/bot6977955174:AAHbQ6CpdIvPnVsJBh14vPFw1iWm6UT38XQ/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-rho-six.vercel.app/api/bot"}'
 
-curl -X POST https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook -H "Content-type: application/json" -d '{"url": "https://bot-proxima812.vercel.app/api/webhook"}'
+Для grammy.js надо писать это в браузере:
 
-
-https://soul-tg-bot-proxima812.vercel.app/
-
-curl -X POST https://api.telegram.org/bot6977955174:AAHbQ6CpdIvPnVsJBh14vPFw1iWm6UT38XQ/setWebhook -H "Content-type: application/json" -d '{"url": "https://soul-tg-bot-proxima812.vercel.app/api/webhook"}'
-
-
-https://api.telegram.org/bot6923422402:AAEBObqEF04ncfNijpfCK5jO5rHOIqqSRIo/setWebhook?url=https://grammy-bot-gilt.vercel.app/api/bot/
+https://api.telegram.org/bot6662031438:AAGGh0ZaoFbyDhrlUbr5dotx23QQDOySrUY/setWebhook?url=https://bot-rho-six.vercel.app/api/bot/

@@ -45,43 +45,42 @@ const sendMessage = async (ctx, text, options = {}) => {
 bot.on("message", async ctx => {
 	await deletePreviousMessages(ctx)
 	const text = ctx.message.text
-	const username = ctx.from.first_name
+	const firstName = ctx.from.first_name
+	const mention = ctx.from.username
+		? `@${ctx.from.username}`
+		: `[${firstName}](tg://user?id=${ctx.from.id})`
 
 	switch (text) {
 		case "/q":
 			const question = questions[Math.floor(Math.random() * questions.length)]
-			await sendMessage(ctx, `🎁 Рандомная тема:\n\n*${question}*`, {
+			await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n*${question}*`, {
 				parse_mode: "Markdown",
 			})
 			break
 		case "/idea":
 			const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-			await sendMessage(ctx, `*${username}!*\n\n💡 Для вас нашлась идея:\n\n*${idea}*`, {
+			await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n*${idea}*`, {
 				parse_mode: "Markdown",
 			})
 			break
 		case "/set":
 			const mood = setMood[Math.floor(Math.random() * setMood.length)]
-			await sendMessage(
-				ctx,
-				`*${username}!*\n\n👤 Ваша установка на день:\n\n*${mood}*`,
-				{
-					parse_mode: "Markdown",
-				},
-			)
+			await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n*${mood}*`, {
+				parse_mode: "Markdown",
+			})
 			break
 		case "/b":
 			const quote = quotes[Math.floor(Math.random() * quotes.length)]
 			await sendMessage(
 				ctx,
-				`*${username}!*\n\n🙌 Вам важно прочитать это сегодня:\n\n*${quote}*`,
+				`🙌 ${mention}, вам важно прочитать это сегодня:\n\n*${quote}*`,
 				{
 					parse_mode: "Markdown",
 				},
 			)
 			break
 		default:
-			await sendMessage(ctx, "Извините, я не понимаю эту команду.")
+			await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
 	}
 })
 
