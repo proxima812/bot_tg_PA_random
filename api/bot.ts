@@ -11,8 +11,6 @@ if (!token) throw new Error("TOKEN is unset")
 
 const bot = new Bot(token)
 
-const TOPIC_Q_ID = 1 // ID для команды /q
-const TOPIC_OTHERS_ID = 249 // ID для остальных команд
 
 let messageIds = new Map()
 
@@ -51,83 +49,37 @@ bot.on("message", async ctx => {
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
 		? `@${ctx.from.username}`
-		: `[${firstName}](tg://user?id=${ctx.from.id})`
-
-	// Проверка на то, что сообщение является ответом на сообщение
-	if (ctx.message.reply_to_message) {
-		switch (text) {
-			case "/q":
-				if (ctx.message.reply_to_message.message_id === 1) {
-					// Выполнить, если команда /q дана в ответ на сообщение с ID 1
-					const question = questions[Math.floor(Math.random() * questions.length)]
-					await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n*${question}*`, {
-						parse_mode: "Markdown",
-					})
-				}
-				break
-			// Другие команды, если они даны в ответ на сообщение с ID 249
-			// ...
-		}
-  }
+    : `[${firstName}](tg://user?id=${ctx.from.id})`
   
-  // Если нужно, чтобы другие команды работали только при ответе на сообщение с ID 249
-	if (ctx.message.reply_to_message && ctx.message.reply_to_message.message_id === 249) {
-		switch (text) {
-			// Например, команда /idea
-			case "/idea":
-				// Выполнить, если команда /idea дана в ответ на сообщение с ID 249
-				const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-				await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n*${idea}*`, {
-					parse_mode: "Markdown",
-				})
-				break
-				case "/set":
-					const mood = setMood[Math.floor(Math.random() * setMood.length)]
-					await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n*${mood}*`, {
-						parse_mode: "Markdown",
-					})
-					break
-				case "/b":
-					const quote = quotes[Math.floor(Math.random() * quotes.length)]
-					await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`, {
-						parse_mode: "Markdown",
-					})
-					break
-				default:
-					await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
-			}
-		}
-	}
 
-	// switch (text) {
-	// 	case "/q":
-	// 		const question = questions[Math.floor(Math.random() * questions.length)]
-	// 		await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n*${question}*`, {
-	// 			parse_mode: "Markdown",
-	// 		})
-	// 		break
-	// 	case "/idea":
-	// 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-	// 		await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n*${idea}*`, {
-	// 			parse_mode: "Markdown",
-	// 		})
-	// 		break
-	// 	case "/set":
-	// 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
-	// 		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n*${mood}*`, {
-	// 			parse_mode: "Markdown",
-	// 		})
-	// 		break
-	// 	case "/b":
-	// 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
-	// 		await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`, {
-	// 			parse_mode: "Markdown",
-	// 		})
-	// 		break
-	// 	default:
-	// 		await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
-	// }
-// })
-)
+	switch (text) {
+		case "/q":
+			const question = questions[Math.floor(Math.random() * questions.length)]
+			await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n*${question}*`, {
+				parse_mode: "Markdown",
+			})
+			break
+		case "/idea":
+			const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
+			await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n*${idea}*`, {
+				parse_mode: "Markdown",
+			})
+			break
+		case "/set":
+			const mood = setMood[Math.floor(Math.random() * setMood.length)]
+			await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n*${mood}*`, {
+				parse_mode: "Markdown",
+			})
+			break
+		case "/b":
+			const quote = quotes[Math.floor(Math.random() * quotes.length)]
+			await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`, {
+				parse_mode: "Markdown",
+			})
+			break
+		default:
+			await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
+	}
+})
 
 export default webhookCallback(bot, "http")
