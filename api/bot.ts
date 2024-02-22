@@ -127,6 +127,7 @@ bot.on("message", async ctx => {
 	// 	default:
 	// 		await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
 	// }
-})
+// })
+)
 
 export default webhookCallback(bot, "http")
