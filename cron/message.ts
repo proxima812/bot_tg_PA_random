@@ -1,13 +1,19 @@
 require("dotenv").config()
-import { Bot, webhookCallback } from "grammy"
+import { Bot } from "grammy"
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
 
+const chatId = -1002084678955
+
 const bot = new Bot(token)
 
-// Отвечает "Привет!" на команду /start
-bot.command("start", async ctx => {
-	await ctx.reply("Привет!")
-})
+async function sendMessage() {
+	try {
+		await bot.api.sendMessage(chatId, "Тест крон задачи.")
+		console.log("Сообщение успешно отправлено")
+	} catch (error) {
+		console.error("Ошибка при отправке сообщения:", error)
+	}
+}
 
-export default webhookCallback(bot, "http")
+sendMessage().then(() => process.exit(0))
