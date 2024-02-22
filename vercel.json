@@ -7,8 +7,8 @@
 	},
 	"crons": [
 		{
-			"path": "api/cron/message",
-			"schedule": "0 20 * * *"
+			"path": "/api/cron",
+			"schedule": "0 10 * * *"
 		}
 	]
 }
