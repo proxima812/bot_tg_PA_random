@@ -11,36 +11,19 @@ if (!token) throw new Error("TOKEN is unset")
 
 const bot = new Bot(token)
 
-
 let messageIds = new Map()
 
 const deletePreviousMessages = async ctx => {
 	const chatId = ctx.chat.id
-	const currentMessageId = ctx.message.message_id // Получаем ID текущего сообщения (команды)
+	const messageId = ctx.message.message_id // Получаем ID текущего сообщения (команды)
 
-	// Добавляем ID текущего сообщения в массив для удаления
-	if (!messageIds.has(chatId)) {
-		messageIds.set(chatId, [currentMessageId])
-	} else {
-		let ids = messageIds.get(chatId)
-		if (!ids.includes(currentMessageId)) {
-			ids.push(currentMessageId)
-		}
-	}
-
-	// Удаляем предыдущие сообщения
-	if (messageIds.has(chatId)) {
-		for (let messageId of messageIds.get(chatId)) {
-			try {
-				await ctx.api.deleteMessage(chatId, messageId)
-			} catch (error) {
-				console.error("Error deleting message", error.toString())
-			}
-		}
-		messageIds.set(chatId, []) // Очищаем массив ID после удаления
+	// Просто удаляем сообщение с командой
+	try {
+		await ctx.api.deleteMessage(chatId, messageId)
+	} catch (error) {
+		console.error("Error deleting command message", error.toString())
 	}
 }
-
 
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
@@ -63,8 +46,7 @@ bot.on("message", async ctx => {
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
 		? `@${ctx.from.username}`
-    : `[${firstName}](tg://user?id=${ctx.from.id})`
-  
+		: `[${firstName}](tg://user?id=${ctx.from.id})`
 
 	switch (text) {
 		case "/q":
@@ -91,8 +73,8 @@ bot.on("message", async ctx => {
 				parse_mode: "Markdown",
 			})
 			break
-		default:
-			await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
+		// default:
+		// 	await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
 	}
 })
 
