@@ -71,13 +71,9 @@ bot.on("message", async ctx => {
 			break
 		case "/b":
 			const quote = quotes[Math.floor(Math.random() * quotes.length)]
-			await sendMessage(
-				ctx,
-				`🙌 ${mention}, вам важно прочитать это сегодня:\n\n*${quote}*`,
-				{
-					parse_mode: "Markdown",
-				},
-			)
+			await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`, {
+				parse_mode: "Markdown",
+			})
 			break
 		default:
 			await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
