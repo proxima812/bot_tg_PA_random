@@ -4,10 +4,10 @@ process.env.NTBA_FIX_319 = "test"
 const TOKEN = process.env.API_TOKEN
 const TelegramBot = require("node-telegram-bot-api")
 
-const questions = require("./questions.js")
-const ideasWithEmojis = require("./ideasWithEmojis.js")
-const setMood = require("./setMood.js")
-const quotes = require("./quotes.js")
+const questions = require("../handlers/questions.js")
+const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
+const setMood = require("../handlers/setMood.js")
+const quotes = require("../handlers/quotes.js")
 
 // Подключаем библиотеку Telegram Bot API
 const bot = new TelegramBot(TOKEN)
