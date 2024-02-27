@@ -16,14 +16,18 @@ let messageIds = new Map()
 const deletePreviousMessages = async ctx => {
 	const chatId = ctx.chat.id
 	const messageId = ctx.message.message_id // Получаем ID текущего сообщения (команды)
+	const text = ctx.message.text // Текст сообщения
 
-	// Просто удаляем сообщение с командой
-	try {
-		await ctx.api.deleteMessage(chatId, messageId)
-	} catch (error) {
-		console.error("Error deleting command message", error.toString())
+	// Проверяем, является ли сообщение командой
+	if (text.startsWith("/")) {
+		try {
+			await ctx.api.deleteMessage(chatId, messageId)
+		} catch (error) {
+			console.error("Error deleting command message", error.toString())
+		}
 	}
 }
+
 
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
