@@ -21,13 +21,12 @@ const deletePreviousMessages = async ctx => {
 	// Проверяем, является ли сообщение командой
 	if (text.startsWith("/")) {
 		try {
-			await ctx.api.deleteMessage(chatId, messageId)
+			await ctx.api.deleteMessage(chatId, messageId) // Удаляем сообщение-команду
 		} catch (error) {
 			console.error("Error deleting command message", error.toString())
 		}
 	}
 }
-
 
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
