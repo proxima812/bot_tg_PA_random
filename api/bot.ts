@@ -44,7 +44,6 @@ const sendMessage = async (ctx, text, options = {}) => {
 }
 
 bot.on("message", async ctx => {
-	await deletePreviousMessages(ctx)
 	const text = ctx.message.text
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
