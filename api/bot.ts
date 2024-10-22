@@ -13,33 +13,11 @@ const bot = new Bot(token)
 
 let messageIds = new Map() // Для хранения сообщений
 
-// Функция для экранирования специальных символов Markdown
-const escapeMarkdown = text => {
-	return text
-		.replace(/_/g, "\\_")
-		.replace(/\*/g, "\\*")
-		.replace(/\[/g, "\\[")
-		.replace(/\]/g, "\\]")
-		.replace(/\(/g, "\\(")
-		.replace(/\)/g, "\\)")
-		.replace(/~/g, "\\~")
-		.replace(/`/g, "\\`")
-		.replace(/>/g, "\\>")
-		.replace(/#/g, "\\#")
-		.replace(/\+/g, "\\+")
-		.replace(/-/g, "\\-")
-		.replace(/=/g, "\\=")
-		.replace(/\|/g, "\\|")
-		.replace(/\./g, "\\.")
-		.replace(/!/g, "\\!")
-}
-
 // Функция для отправки сообщений
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
 		// Экранируем текст перед отправкой
-		const escapedText = escapeMarkdown(text)
-		const message = await ctx.reply(escapedText, { ...options, parse_mode: "Markdown" })
+		const message = await ctx.reply(text, { ...options, parse_mode: "Markdown" })
 		const chatId = ctx.chat.id
 		const messageId = message.message_id
 
