@@ -74,7 +74,7 @@ bot.on("message", async ctx => {
 		: `[${firstName}](tg://user?id=${ctx.from.id})`
 
 	// Удаление команды
-	await deletePreviousMessages(ctx)
+	// await deletePreviousMessages(ctx)
 
 	// Выполнение команды, если она существует в объекте
 	if (commands[text]) {
