@@ -50,7 +50,7 @@ const deletePreviousMessages = async ctx => {
 
 // Объект с командами
 const commands = {
-	"/q(?!@\\w+)?": async (ctx, mention) => {
+	"/q": async (ctx, mention) => {
 		const question = questions[Math.floor(Math.random() * questions.length)]
 		await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
 	},
