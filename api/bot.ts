@@ -13,10 +13,9 @@ const bot = new Bot(token)
 
 let messageIds = new Map() // Для хранения сообщений
 
-// Функция для отправки сообщений
+// Функция для отправки сообщений без экранирования символов
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
-		// Экранируем текст перед отправкой
 		const message = await ctx.reply(text, { ...options, parse_mode: "Markdown" })
 		const chatId = ctx.chat.id
 		const messageId = message.message_id
