@@ -1,6 +1,5 @@
 require("dotenv").config()
 import { Bot, webhookCallback } from "grammy"
-const fs = require("fs")
 
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
