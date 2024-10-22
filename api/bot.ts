@@ -1,5 +1,6 @@
 require("dotenv").config()
 import { Bot, webhookCallback } from "grammy"
+const fs = require("fs")
 
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
@@ -48,7 +49,8 @@ const deletePreviousMessages = async ctx => {
 	}
 }
 
-const imagePath = "../1.jpg"
+
+const imagePath = "../images/1.jpg"
 // Объект с командами
 const commands = {
 	"/q": async (ctx, mention) => {
@@ -67,10 +69,13 @@ const commands = {
 		// Случайная цитата
 		const mood = js[Math.floor(Math.random() * js.length)]
 
-		// Отправляем локальное изображение с текстом
+		// Чтение локального файла изображения через fs
+		const photoStream = fs.createReadStream(imagePath)
+
+		// Отправляем изображение с текстом
 		await ctx.api.sendPhoto(
 			ctx.chat.id,
-			{ source: imagePath },
+			{ source: photoStream },
 			{
 				caption: `👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b>`,
 				parse_mode: "HTML", // Для поддержки HTML-тегов
@@ -98,9 +103,9 @@ bot.on("message", async ctx => {
 	await deletePreviousMessages(ctx)
 
 	// Выполнение команды, если она существует в объекте
-if (commands[text]) {
-	await commands[text](ctx, mention)
-}
+	if (commands[text]) {
+		await commands[text](ctx, mention)
+	}
 })
 
 export default webhookCallback(bot, "http")
