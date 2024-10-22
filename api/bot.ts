@@ -16,7 +16,7 @@ let messageIds = new Map() // Для хранения сообщений
 // Функция для отправки сообщений без экранирования символов
 const sendMessage = async (ctx, text, options = {}) => {
 	try {
-		const message = await ctx.reply(text, { ...options, parse_mode: "Markdown" })
+		const message = await ctx.reply(text, { ...options, parse_mode: "MarkdownV2" })
 		const chatId = ctx.chat.id
 		const messageId = message.message_id
 
