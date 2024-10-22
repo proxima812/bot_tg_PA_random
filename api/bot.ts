@@ -68,7 +68,8 @@ const commands = {
 		const mood = js[Math.floor(Math.random() * js.length)]
 
 		// Отправляем локальное изображение с текстом
-		await ctx.sendPhoto(
+		await ctx.api.sendPhoto(
+			ctx.chat.id,
 			{ source: imagePath },
 			{
 				caption: `👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b>`,
