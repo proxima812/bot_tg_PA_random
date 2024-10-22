@@ -80,11 +80,9 @@ bot.on("message", async ctx => {
 	// await deletePreviousMessages(ctx)
 
 	// Выполнение команды, если она существует в объекте
-	if (commands[text]) {
-		await commands[text](ctx, mention)
-	} else {
-		await sendMessage(ctx, `Извините, ${mention}, я не понимаю эту команду.`)
-	}
+if (commands[text]) {
+	await commands[text](ctx, mention)
+}
 })
 
 export default webhookCallback(bot, "http")
