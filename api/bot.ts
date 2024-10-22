@@ -38,12 +38,15 @@ const deletePreviousMessages = async ctx => {
 	// Проверяем, является ли сообщение командой
 	if (text.startsWith("/")) {
 		try {
-			await ctx.api.deleteMessage(chatId, ctx.message.message_id)
+			setTimeout(async () => {
+				await ctx.api.deleteMessage(chatId, ctx.message.message_id)
+			}, 5000)
 		} catch (error) {
 			console.error("Error deleting command message:", error.toString())
 		}
 	}
 }
+
 
 // Объект с командами
 const commands = {
@@ -77,7 +80,7 @@ bot.on("message", async ctx => {
 		: `<a href="tg://user?id=${ctx.from.id}">${firstName}</a>` // Используем HTML-ссылку для упоминания пользователя
 
 	// Удаление команды
-	// await deletePreviousMessages(ctx)
+	await deletePreviousMessages(ctx)
 
 	// Выполнение команды, если она существует в объекте
 if (commands[text]) {
