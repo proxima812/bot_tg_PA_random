@@ -59,10 +59,10 @@ const commands = {
 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
 		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n*${mood}*`)
 	},
-	"/b": async (ctx, mention) => {
-		const quote = quotes[Math.floor(Math.random() * quotes.length)]
-		await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`)
-	},
+	// "/b": async (ctx, mention) => {
+	// 	const quote = quotes[Math.floor(Math.random() * quotes.length)]
+	// 	await sendMessage(ctx, `${mention}, одна из цитат:\n\n*${quote}* \n\n_-Конфуций_`)
+	// },
 }
 
 // Обработка сообщений
