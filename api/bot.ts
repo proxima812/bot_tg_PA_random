@@ -5,6 +5,7 @@ const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
 const setMood = require("../handlers/setMood.js")
 const quotes = require("../handlers/quotes.js")
+const js = require("../handlers/js.js")
 
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
@@ -47,7 +48,7 @@ const deletePreviousMessages = async ctx => {
 	}
 }
 
-
+const imagePath = "../1.jpg"
 // Объект с командами
 const commands = {
 	"/q": async (ctx, mention) => {
@@ -61,6 +62,19 @@ const commands = {
 	"/set": async (ctx, mention) => {
 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
 		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
+	},
+	"/js": async (ctx, mention) => {
+		// Случайная цитата
+		const mood = js[Math.floor(Math.random() * js.length)]
+
+		// Отправляем локальное изображение с текстом
+		await ctx.sendPhoto(
+			{ source: imagePath },
+			{
+				caption: `👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b>`,
+				parse_mode: "HTML", // Для поддержки HTML-тегов
+			},
+		)
 	},
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
