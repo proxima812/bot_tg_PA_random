@@ -50,48 +50,26 @@ const deletePreviousMessages = async ctx => {
 
 // Объект с командами
 const commands = {
-	"/q": async ctx => {
-		const text = ctx.message.text // Получаем текст сообщения
-		const mention = ctx.message.from.first_name // Или другой способ получения упоминания
+	"/q(?!@\\w+)?": async (ctx, mention) => {
 		const question = questions[Math.floor(Math.random() * questions.length)]
-
-		// Проверяем, является ли текст командой "/q" или "/q@pa_12steps_bot"
-		if (text === "/q" || text.startsWith("/q@pa_12steps_bot")) {
-			await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
-		}
+		await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
 	},
-	"/idea": async ctx => {
-		const text = ctx.message.text
-		const mention = ctx.message.from.first_name // Получаем имя пользователя
+	"/idea": async (ctx, mention) => {
 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-
-		if (text === "/idea" || text.startsWith("/idea@pa_12steps_bot")) {
-			await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`)
-		}
+		await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`)
 	},
-	"/set": async ctx => {
-		const text = ctx.message.text
-		const mention = ctx.message.from.first_name // Получаем имя пользователя
+	"/set": async (ctx, mention) => {
 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
-
-		if (text === "/set" || text.startsWith("/set@pa_12steps_bot")) {
-			await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
-		}
+		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
 	},
-	"/b": async ctx => {
-		const text = ctx.message.text
-		const mention = ctx.message.from.first_name // Получаем имя пользователя
+	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
-
-		if (text === "/b" || text.startsWith("/b@pa_12steps_bot")) {
-			await sendMessage(
-				ctx,
-				`${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
-			)
-		}
+		await sendMessage(
+			ctx,
+			`${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
+		)
 	},
 }
-
 
 // Обработка сообщений
 bot.on("message", async ctx => {
