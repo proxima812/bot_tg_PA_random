@@ -49,8 +49,6 @@ const deletePreviousMessages = async ctx => {
 	}
 }
 
-
-const imagePath = "../images/1.jpg"
 // Объект с командами
 const commands = {
 	"/q": async (ctx, mention) => {
@@ -66,20 +64,10 @@ const commands = {
 		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
 	},
 	"/js": async (ctx, mention) => {
-		// Случайная цитата
 		const mood = js[Math.floor(Math.random() * js.length)]
-
-		// Чтение локального файла изображения через fs
-		const photoStream = fs.createReadStream(imagePath)
-
-		// Отправляем изображение с текстом
-		await ctx.api.sendPhoto(
-			ctx.chat.id,
-			{ source: photoStream },
-			{
-				caption: `👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b>`,
-				parse_mode: "HTML", // Для поддержки HTML-тегов
-			},
+		await sendMessage(
+			ctx,
+			`👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
 		)
 	},
 	"/b": async (ctx, mention) => {
