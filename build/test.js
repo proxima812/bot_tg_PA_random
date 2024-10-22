@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const grammy_1 = require("grammy");
 // Create an instance of the `Bot` class and pass your bot token to it.
-const bot = new grammy_1.Bot("6662031438:AAGf6QtYKRJVq6NhLRkASWphX7mU1RSBBq0"); // <-- put your bot token between the ""
+const bot = new grammy_1.Bot("7930164051:AAHF4GdP_jpjOiBl6ZCA1gY8HJZ-VH3A520"); // <-- put your bot token between the ""
 // You can now register listeners on your bot object `bot`.
 // grammY will call the listeners when users send messages to your bot.
 // Handle the /start command.
