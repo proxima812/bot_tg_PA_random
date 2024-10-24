@@ -10,5 +10,8 @@
 				"schedule": "0 0 * * *"
 			}
 		]
+	},
+	"env": {
+		"CRON_SECRET": "bG93WQeT48S9mKwVzX1Gq7Pjf6AcNd"
 	}
 }
