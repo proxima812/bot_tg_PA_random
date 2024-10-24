@@ -32,7 +32,6 @@ const sendMessage = async (ctx, text, options = {}) => {
 }
 
 // Функция для удаления предыдущих сообщений (очистка чата)
-// Function to delete previous messages (clearing the chat)
 const deletePreviousMessages = async ctx => {
 	const chatId = ctx.chat.id;
 
@@ -43,15 +42,14 @@ const deletePreviousMessages = async ctx => {
 		// Check if the message starts with a command
 		if (text.startsWith("/")) {
 			try {
-				setTimeout(async () => {
-					await ctx.api.deleteMessage(chatId, ctx.message.message_id);
-				}, 5000);
+				await ctx.api.deleteMessage(chatId, ctx.message.message_id);
 			} catch (error) {
 				console.error("Error deleting command message:", error.toString());
 			}
 		}
 	}
 };
+
 
 
 // Объект с командами
