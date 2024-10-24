@@ -3,14 +3,14 @@
 		"api/bot.ts": {
 			"memory": 1024,
 			"maxDuration": 10
-		},
-		"crons": [
-			{
-				"path": "/api/cron",
-				"schedule": "0 0 * * *"
-			}
-		]
+		}
 	},
+	"crons": [
+		{
+			"path": "/api/cron",
+			"schedule": "0 0 * * *"
+		}
+	],
 	"env": {
 		"CRON_SECRET": "bG93WQeT48S9mKwVzX1Gq7Pjf6AcNd"
 	}
