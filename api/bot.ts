@@ -1,5 +1,5 @@
 require("dotenv").config()
-import { Bot, webhookCallback } from "grammy"
+import { Bot, webhookCallback, InlineKeyboard } from "grammy"
 
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
@@ -8,6 +8,22 @@ const quotes = require("../handlers/quotes.js")
 const js = require("../handlers/js.js")
 const bk = require("../handlers/bk.js")
 const tr = require("../handlers/tr.js")
+
+// Определяем массив традиций
+const traditions = [
+	"Традиция 1",
+	"Традиция 2",
+	"Традиция 3",
+	"Традиция 4",
+	"Традиция 5",
+	"Традиция 6",
+	"Традиция 7",
+	"Традиция 8",
+	"Традиция 9",
+	"Традиция 10",
+	"Традиция 11",
+	"Традиция 12",
+]
 
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
@@ -77,12 +93,23 @@ const commands = {
 		const mood = bk[Math.floor(Math.random() * bk.length)]
 		await sendMessage(ctx, `👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
 	},
+	// "/tr": async ctx => {
+	// 	const mood = tr[Math.floor(Math.random() * tr.length)]
+	// 	await sendMessage(
+	// 		ctx,
+	// 		`Случайная Традиция для изучения:\n\n${mood} \n\n<i>-Традиции АПРО</i>`,
+	// 	)
+	// },
+	// Обновленный обработчик для команды /tr
 	"/tr": async ctx => {
-		const mood = tr[Math.floor(Math.random() * tr.length)]
-		await sendMessage(
-			ctx,
-			`Случайная Традиция для изучения:\n\n${mood} \n\n<i>-Традиции АПРО</i>`,
-		)
+		// Создаём кнопки для традиций
+		const buttons = traditions.map(tradition => [
+			{ text: tradition, callback_data: `tradition_${tradition}` },
+		])
+
+		const inlineKeyboard = new InlineKeyboard().add(...buttons)
+
+		await ctx.reply("Выберите Традицию:", { reply_markup: inlineKeyboard })
 	},
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
@@ -92,6 +119,23 @@ const commands = {
 		)
 	},
 }
+
+// Обработка нажатий на кнопки
+bot.on("callback_query:data", async (ctx) => {
+    const callbackData = ctx.callbackQuery.data;
+
+    // Проверяем, начинается ли callback data с 'tradition_'
+    if (callbackData.startsWith("tradition_")) {
+        const tradition = callbackData.split("_")[1]; // Извлекаем название традиции
+
+        await ctx.answerCallbackQuery(); // Подтверждаем нажатие
+
+        await sendMessage(
+            ctx,
+            `${tradition} \n\n<i>-Традиции АПРО</i>`
+        );
+    }
+});
 
 // Обработка сообщений
 bot.on("message", async ctx => {
