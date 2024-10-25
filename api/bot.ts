@@ -102,14 +102,20 @@ const commands = {
 	// },
 	// Обновленный обработчик для команды /tr
 	"/tr": async ctx => {
-		// Создаём кнопки для традиций
-		const buttons = traditions.map(tradition => [
-			{ text: tradition, callback_data: `tradition_${tradition}` },
-		])
+		// Создаем клавиатуру
+		const inlineKeyboard = new InlineKeyboard()
 
-		const inlineKeyboard = new InlineKeyboard().add(...buttons)
+		// Добавляем кнопки в две колонки
+		traditions.forEach((tradition, index) => {
+			inlineKeyboard.add({ text: tradition, callback_data: `tradition_${tradition}` })
 
-		await ctx.reply("Выберите Традицию:", { reply_markup: inlineKeyboard })
+			// Добавляем дополнительный ряд каждые 2 кнопки
+			if ((index + 1) % 2 === 0) {
+				inlineKeyboard.row() // Создает новый ряд после каждой второй кнопки
+			}
+		})
+
+		await ctx.reply("Выберите традицию для изучения:", { reply_markup: inlineKeyboard })
 	},
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
@@ -120,22 +126,17 @@ const commands = {
 	},
 }
 
-// Обработка нажатий на кнопки
-bot.on("callback_query:data", async (ctx) => {
-    const callbackData = ctx.callbackQuery.data;
+bot.on("callback_query:data", async ctx => {
+	const callbackData = ctx.callbackQuery.data
 
-    // Проверяем, начинается ли callback data с 'tradition_'
-    if (callbackData.startsWith("tradition_")) {
-        const tradition = callbackData.split("_")[1]; // Извлекаем название традиции
+	if (callbackData.startsWith("tradition_")) {
+		const tradition = callbackData.split("_")[1] // Извлекаем название традиции
 
-        await ctx.answerCallbackQuery(); // Подтверждаем нажатие
+		await ctx.answerCallbackQuery() // Подтверждаем нажатие
 
-        await sendMessage(
-            ctx,
-            `${tradition} \n\n<i>-Традиции АПРО</i>`
-        );
-    }
-});
+		await sendMessage(ctx, `${tradition} \n\n<i>-Традиции АПРО</i>`)
+	}
+})
 
 // Обработка сообщений
 bot.on("message", async ctx => {
