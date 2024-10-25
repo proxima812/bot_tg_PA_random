@@ -35,24 +35,22 @@ const sendMessage = async (ctx, text, options = {}) => {
 
 // Функция для удаления предыдущих сообщений (очистка чата)
 const deletePreviousMessages = async ctx => {
-	const chatId = ctx.chat.id;
+	const chatId = ctx.chat.id
 
 	// Check if the message and the message text exist
 	if (ctx.message && ctx.message.text) {
-		const text = ctx.message.text;
+		const text = ctx.message.text
 
 		// Check if the message starts with a command
 		if (text.startsWith("/")) {
 			try {
-				await ctx.api.deleteMessage(chatId, ctx.message.message_id);
+				await ctx.api.deleteMessage(chatId, ctx.message.message_id)
 			} catch (error) {
-				console.error("Error deleting command message:", error.toString());
+				console.error("Error deleting command message:", error.toString())
 			}
 		}
 	}
-};
-
-
+}
 
 // Объект с командами
 const commands = {
@@ -79,9 +77,12 @@ const commands = {
 		const mood = bk[Math.floor(Math.random() * bk.length)]
 		await sendMessage(ctx, `👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
 	},
-	"/tr": async (ctx) => {
+	"/tr": async ctx => {
 		const mood = tr[Math.floor(Math.random() * tr.length)]
-		await sendMessage(ctx, `Случайная Традиция для изучения:\n\n<b>${mood}</b> \n\n<i>-Традиции АПРО</i>`)
+		await sendMessage(
+			ctx,
+			`Случайная Традиция для изучения:\n\n${mood} \n\n<i>-Традиции АПРО</i>`,
+		)
 	},
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
