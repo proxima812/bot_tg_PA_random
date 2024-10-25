@@ -1,5 +1,5 @@
 require("dotenv").config()
-import { Bot, webhookCallback, InlineKeyboard } from "grammy"
+import { Bot, InlineKeyboard, webhookCallback } from "grammy"
 
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
@@ -107,7 +107,7 @@ const commands = {
 
 		// Добавляем кнопки в две колонки
 		traditions.forEach((tradition, index) => {
-			inlineKeyboard.add({ text: tradition, callback_data: `tradition_${tradition}` })
+			inlineKeyboard.add({ text: tradition, callback_data: `tradition_${index}` })
 
 			// Добавляем дополнительный ряд каждые 2 кнопки
 			if ((index + 1) % 2 === 0) {
@@ -126,17 +126,21 @@ const commands = {
 	},
 }
 
-bot.on("callback_query:data", async ctx => {
-	const callbackData = ctx.callbackQuery.data
+// Обработка нажатий на кнопки
+bot.on("callback_query:data", async (ctx) => {
+    const callbackData = ctx.callbackQuery.data;
 
-	if (callbackData.startsWith("tradition_")) {
-		const tradition = callbackData.split("_")[1] // Извлекаем название традиции
+    if (callbackData.startsWith("tradition_")) {
+        const index = parseInt(callbackData.split("_")[1]); // Извлекаем индекс традиции
 
-		await ctx.answerCallbackQuery() // Подтверждаем нажатие
+        // Получаем текст описания традиции по индексу
+        const traditionText = tr[index];
 
-		await sendMessage(ctx, `${tradition} \n\n<i>-Традиции АПРО</i>`)
-	}
-})
+        await ctx.answerCallbackQuery(); // Подтверждаем нажатие
+
+        await sendMessage(ctx, traditionText); // Отправляем текст традиции
+    }
+});
 
 // Обработка сообщений
 bot.on("message", async ctx => {
