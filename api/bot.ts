@@ -6,6 +6,8 @@ const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
 const setMood = require("../handlers/setMood.js")
 const quotes = require("../handlers/quotes.js")
 const js = require("../handlers/js.js")
+const bk = require("../handlers/bk.js")
+const tr = require("../handlers/tr.js")
 
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
@@ -70,8 +72,16 @@ const commands = {
 		const mood = js[Math.floor(Math.random() * js.length)]
 		await sendMessage(
 			ctx,
-			`👤 ${mention}, Великая цитата 😂:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
+			`😂 ${mention}, великая цитата:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
 		)
+	},
+	"/bk": async (ctx, mention) => {
+		const mood = bk[Math.floor(Math.random() * bk.length)]
+		await sendMessage(ctx, `👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
+	},
+	"/tr": async (ctx) => {
+		const mood = tr[Math.floor(Math.random() * tr.length)]
+		await sendMessage(ctx, `Случайная Традиция для изучения:\n\n<b>${mood}</b> \n\n<i>-Традиции АПРО</i>`)
 	},
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
@@ -91,7 +101,7 @@ bot.on("message", async ctx => {
 		: `<a href="tg://user?id=${ctx.from.id}">${firstName}</a>` // Используем HTML-ссылку для упоминания пользователя
 
 	// Удаление команды
-	await deletePreviousMessages(ctx)
+	// await deletePreviousMessages(ctx)
 
 	// Выполнение команды, если она существует в объекте
 	if (commands[text]) {
