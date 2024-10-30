@@ -10,20 +10,20 @@ const bk = require("../handlers/bk.js")
 const tr = require("../handlers/tr.js")
 
 // Определяем массив традиций
-const traditions = [
-	"Традиция 1",
-	"Традиция 2",
-	"Традиция 3",
-	"Традиция 4",
-	"Традиция 5",
-	"Традиция 6",
-	"Традиция 7",
-	"Традиция 8",
-	"Традиция 9",
-	"Традиция 10",
-	"Традиция 11",
-	"Традиция 12",
-]
+// const traditions = [
+// 	"Традиция 1",
+// 	"Традиция 2",
+// 	"Традиция 3",
+// 	"Традиция 4",
+// 	"Традиция 5",
+// 	"Традиция 6",
+// 	"Традиция 7",
+// 	"Традиция 8",
+// 	"Традиция 9",
+// 	"Традиция 10",
+// 	"Традиция 11",
+// 	"Традиция 12",
+// ]
 
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
@@ -133,20 +133,20 @@ const commands = {
 }
 
 // Обработка нажатий на кнопки
-bot.on("callback_query:data", async ctx => {
-	const callbackData = ctx.callbackQuery.data
+// bot.on("callback_query:data", async ctx => {
+// 	const callbackData = ctx.callbackQuery.data
 
-	if (callbackData.startsWith("tradition_")) {
-		const index = parseInt(callbackData.split("_")[1]) // Извлекаем индекс традиции
+// 	if (callbackData.startsWith("tradition_")) {
+// 		const index = parseInt(callbackData.split("_")[1]) // Извлекаем индекс традиции
 
-		// Получаем текст описания традиции по индексу
-		const traditionText = tr[index]
+// 		// Получаем текст описания традиции по индексу
+// 		const traditionText = tr[index]
 
-		await ctx.answerCallbackQuery() // Подтверждаем нажатие
+// 		await ctx.answerCallbackQuery() // Подтверждаем нажатие
 
-		await sendMessage(ctx, traditionText) // Отправляем текст традиции
-	}
-})
+// 		await sendMessage(ctx, traditionText) // Отправляем текст традиции
+// 	}
+// })
 
 // Обработка сообщений
 bot.on("message", async ctx => {
