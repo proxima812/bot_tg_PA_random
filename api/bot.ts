@@ -127,24 +127,24 @@ const commands = {
 }
 
 // Обработка нажатий на кнопки
-bot.on("callback_query:data", async (ctx) => {
-    const callbackData = ctx.callbackQuery.data;
+bot.on("callback_query:data", async ctx => {
+	const callbackData = ctx.callbackQuery.data
 
-    if (callbackData.startsWith("tradition_")) {
-        const index = parseInt(callbackData.split("_")[1]); // Извлекаем индекс традиции
+	if (callbackData.startsWith("tradition_")) {
+		const index = parseInt(callbackData.split("_")[1]) // Извлекаем индекс традиции
 
-        // Получаем текст описания традиции по индексу
-        const traditionText = tr[index];
+		// Получаем текст описания традиции по индексу
+		const traditionText = tr[index]
 
-        await ctx.answerCallbackQuery(); // Подтверждаем нажатие
+		await ctx.answerCallbackQuery() // Подтверждаем нажатие
 
-        await sendMessage(ctx, traditionText); // Отправляем текст традиции
-    }
-});
+		await sendMessage(ctx, traditionText) // Отправляем текст традиции
+	}
+})
 
 // Обработка сообщений
 bot.on("message", async ctx => {
-	const text = ctx.message.text
+	const text = ctx.message.text.toLowerCase()
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
 		? `@${ctx.from.username}`
@@ -154,7 +154,7 @@ bot.on("message", async ctx => {
 	const responses = {
 		собрания: `${mention}, вы спрашиваете о "<b>собрания</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
 		"когда группа": `${mention}, вы спрашиваете "<b>когда группа</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
-		"когда группа?": `${mention}, вы спрашиваете "<b>когда группа?</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
+		"когда группа?": `${mention}, вы спрашиваете "<b>когда группа?</b>"? <a href="https://t.me/ community_pa/3384">Расписание собраний</a>`,
 		"когда собрание?": `${mention}, вы спрашиваете "<b>когда собрание?</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
 		"когда собрание": `${mention}, вы спрашиваете "<b>когда собрание</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
 		"когда встреча?": `${mention}, вы спрашиваете "<b>когда встреча?</b>"? <a href="https://t.me/community_pa/3384">Расписание собраний</a>`,
