@@ -73,26 +73,26 @@ const deletePreviousMessages = async ctx => {
 const commands = {
 	"/q": async (ctx, mention) => {
 		const question = questions[Math.floor(Math.random() * questions.length)]
-		await sendMessage(ctx, `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
+		await sendMessage(ctx, `(команда /q)🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
 	},
 	"/idea": async (ctx, mention) => {
 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-		await sendMessage(ctx, `💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`)
+		await sendMessage(ctx, `(команда /idea)💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`)
 	},
 	"/set": async (ctx, mention) => {
 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
-		await sendMessage(ctx, `👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
+		await sendMessage(ctx, `(команда /set)👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
 	},
 	"/js": async (ctx, mention) => {
 		const mood = js[Math.floor(Math.random() * js.length)]
 		await sendMessage(
 			ctx,
-			`😂 ${mention}, великая цитата:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
+			`(команда /js)😂 ${mention}, великая цитата:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
 		)
 	},
 	"/bk": async (ctx, mention) => {
 		const mood = bk[Math.floor(Math.random() * bk.length)]
-		await sendMessage(ctx, `👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
+		await sendMessage(ctx, `(команда /bk)👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
 	},
 	// "/tr": async ctx => {
 	// 	const mood = tr[Math.floor(Math.random() * tr.length)]
@@ -102,27 +102,27 @@ const commands = {
 	// 	)
 	// },
 	// Обновленный обработчик для команды /tr
-	"/tr": async ctx => {
-		// Создаем клавиатуру
-		const inlineKeyboard = new InlineKeyboard()
+	// "/tr": async ctx => {
+	// 	// Создаем клавиатуру
+	// 	const inlineKeyboard = new InlineKeyboard()
 
-		// Добавляем кнопки в две колонки
-		traditions.forEach((tradition, index) => {
-			inlineKeyboard.add({ text: tradition, callback_data: `tradition_${index}` })
+	// 	// Добавляем кнопки в две колонки
+	// 	traditions.forEach((tradition, index) => {
+	// 		inlineKeyboard.add({ text: tradition, callback_data: `tradition_${index}` })
 
-			// Добавляем дополнительный ряд каждые 2 кнопки
-			if ((index + 1) % 2 === 0) {
-				inlineKeyboard.row() // Создает новый ряд после каждой второй кнопки
-			}
-		})
+	// 		// Добавляем дополнительный ряд каждые 2 кнопки
+	// 		if ((index + 1) % 2 === 0) {
+	// 			inlineKeyboard.row() // Создает новый ряд после каждой второй кнопки
+	// 		}
+	// 	})
 
-		await ctx.reply("Выберите традицию для изучения:", { reply_markup: inlineKeyboard })
-	},
+	// 	await ctx.reply("Выберите традицию для изучения:", { reply_markup: inlineKeyboard })
+	// },
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
 		await sendMessage(
 			ctx,
-			`${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
+			`(команда /b)${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
 		)
 	},
 }
