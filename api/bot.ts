@@ -150,6 +150,11 @@ bot.on("message", async ctx => {
 		? `@${ctx.from.username}`
 		: `<a href="tg://user?id=${ctx.from.id}">${firstName}</a>` // Используем HTML-ссылку для упоминания пользователя
 
+	// Проверяем, содержит ли текст слово "шаги"
+	if (text.includes("шаги")) {
+		await sendMessage(ctx, `${mention}, вы упомянули "шаги"! Как я могу помочь?`)
+	}
+
 	// Удаление команды
 	// await deletePreviousMessages(ctx)
 
