@@ -67,7 +67,7 @@ const deletePreviousMessages = async ctx => {
             }
         }
     }
-}
+};
 
 // Объект с командами
 const commands = {
@@ -106,14 +106,7 @@ const commands = {
 			`(команда /bk)\n👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`,
 		)
 	},
-	// "/tr": async ctx => {
-	// 	const mood = tr[Math.floor(Math.random() * tr.length)]
-	// 	await sendMessage(
-	// 		ctx,
-	// 		`Случайная Традиция для изучения:\n\n${mood} \n\n<i>-Традиции АПРО</i>`,
-	// 	)
-	// },
-	// Обновленный обработчик для команды /tr
+
 	// "/tr": async ctx => {
 	// 	// Создаем клавиатуру
 	// 	const inlineKeyboard = new InlineKeyboard()
