@@ -73,26 +73,38 @@ const deletePreviousMessages = async ctx => {
 const commands = {
 	"/q": async (ctx, mention) => {
 		const question = questions[Math.floor(Math.random() * questions.length)]
-		await sendMessage(ctx, `(команда /q)🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`)
+		await sendMessage(
+			ctx,
+			`(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
+		)
 	},
 	"/idea": async (ctx, mention) => {
 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
-		await sendMessage(ctx, `(команда /idea)💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`)
+		await sendMessage(
+			ctx,
+			`(команда /idea)\n💡 ${mention}, для вас нашлась идея:\n\n<b>${idea}</b>`,
+		)
 	},
 	"/set": async (ctx, mention) => {
 		const mood = setMood[Math.floor(Math.random() * setMood.length)]
-		await sendMessage(ctx, `(команда /set)👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`)
+		await sendMessage(
+			ctx,
+			`(команда /set)\n👤 ${mention}, ваша установка на день:\n\n<b>${mood}</b>`,
+		)
 	},
 	"/js": async (ctx, mention) => {
 		const mood = js[Math.floor(Math.random() * js.length)]
 		await sendMessage(
 			ctx,
-			`(команда /js)😂 ${mention}, великая цитата:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
+			`(команда /js)\n😂 ${mention}, великая цитата:\n\n<b>${mood}</b> \n\n<i>-Джейсон Стетхем</i>`,
 		)
 	},
 	"/bk": async (ctx, mention) => {
 		const mood = bk[Math.floor(Math.random() * bk.length)]
-		await sendMessage(ctx, `(команда /bk)👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`)
+		await sendMessage(
+			ctx,
+			`(команда /bk)\n👤 ${mention}, адаптация:\n\n<b>${mood}</b> \n\n<i>-БКАА</i>`,
+		)
 	},
 	// "/tr": async ctx => {
 	// 	const mood = tr[Math.floor(Math.random() * tr.length)]
@@ -122,7 +134,7 @@ const commands = {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
 		await sendMessage(
 			ctx,
-			`(команда /b)${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
+			`(команда /b)\n🗣 ${mention}, одна из цитат:\n\n<b>${quote}</b> \n\n<i>-Конфуций</i>`,
 		)
 	},
 }
