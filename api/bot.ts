@@ -150,6 +150,14 @@ const commands = {
 
 // Обработка сообщений
 bot.on("message", async ctx => {
+	// Удаляем предыдущие сообщения
+	await deletePreviousMessages(ctx)
+
+	// Проверяем, существует ли сообщение и текст сообщения
+	if (!ctx.message || !ctx.message.text) {
+		return // Если сообщения нет или текст отсутствует, выходим из функции
+	}
+
 	const text = ctx.message.text.toLowerCase()
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
