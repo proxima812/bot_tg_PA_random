@@ -151,6 +151,12 @@ const commands = {
 // Обработка сообщений
 bot.on("message", async ctx => {
 
+
+  if (!ctx.message || !ctx.message.text) {
+		console.log("Received a non-text message or an undefined message.")
+		return // Если нет текста, выходим из функции
+	}
+
 	const text = ctx.message.text.toLowerCase()
 	const firstName = ctx.from.first_name
 	const mention = ctx.from.username
