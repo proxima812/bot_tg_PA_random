@@ -69,15 +69,20 @@ const deletePreviousMessages = async ctx => {
     }
 };
 
+// Функция для выбора случайного вопроса
+const getRandomQuestion = () => {
+  return questions[Math.floor(Math.random() * questions.length)];
+};
+
 // Объект с командами
 const commands = {
-	"/q": async (ctx, mention) => {
-		const question = questions[Math.floor(Math.random() * questions.length)]
-		await sendMessage(
-			ctx,
-			`(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
-		)
-	},
+	// "/q": async (ctx, mention) => {
+	// 	const question = questions[Math.floor(Math.random() * questions.length)]
+	// 	await sendMessage(
+	// 		ctx,
+	// 		`(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
+	// 	)
+	// },
 	"/idea": async (ctx, mention) => {
 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
 		await sendMessage(
@@ -148,6 +153,47 @@ const commands = {
 // 	}
 // })
 
+
+// Обработчик команды /q
+bot.command("q", async (ctx) => {
+  const mention = ctx.from.first_name || "пользователь"; // Получаем имя пользователя
+  const question = getRandomQuestion(); // Получаем случайный вопрос
+
+  // Создаем inline-клавиатуру
+  const keyboard = new InlineKeyboard().text("Другой вопрос", "new_question");
+
+  // Отправляем сообщение с кнопкой
+  await ctx.reply(
+    `(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
+    {
+      parse_mode: "HTML",
+      reply_markup: keyboard,
+    }
+  );
+});
+
+// Обработчик callback-запроса на кнопку "Другой вопрос"
+bot.callbackQuery("new_question", async (ctx) => {
+  const newQuestion = getRandomQuestion(); // Новый случайный вопрос
+
+  try {
+    // Удаляем предыдущее сообщение
+    await ctx.deleteMessage();
+
+    // Отправляем новое сообщение с кнопкой
+    const keyboard = new InlineKeyboard().text("Другой вопрос", "new_question");
+    await ctx.reply(
+      `🎁 Новый вопрос:\n\n<b>${newQuestion}</b>`,
+      {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
+      }
+    );
+  } catch (error) {
+    console.error("Ошибка при удалении сообщения или отправке нового", error);
+  }
+});
+
 // Обработка сообщений
 bot.on("message", async ctx => {
 
@@ -177,12 +223,12 @@ bot.on("message", async ctx => {
 	}
 
 	// Проверяем наличие ключевых фраз и отвечаем соответствующим образом
-	for (const keyword in responses) {
-		if (text.includes(keyword)) {
-			await sendMessage(ctx, responses[keyword])
-			return // Выходим после первого совпадения
-		}
-	}
+	// for (const keyword in responses) {
+	// 	if (text.includes(keyword)) {
+	// 		await sendMessage(ctx, responses[keyword])
+	// 		return // Выходим после первого совпадения
+	// 	}
+	// }
 
 	// Удаление команды
 	// await deletePreviousMessages(ctx)
