@@ -164,7 +164,7 @@ bot.command("q", async (ctx) => {
 
   // Отправляем сообщение с кнопкой
   await ctx.reply(
-    `(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
+    `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
     {
       parse_mode: "HTML",
       reply_markup: keyboard,
@@ -181,9 +181,9 @@ bot.callbackQuery("new_question", async (ctx) => {
     await ctx.deleteMessage();
 
     // Отправляем новое сообщение с кнопкой
-    const keyboard = new InlineKeyboard().text("Другой вопрос", "new_question");
+    const keyboard = new InlineKeyboard().text("Другая тема", "new_question");
     await ctx.reply(
-      `🎁 Новый вопрос:\n\n<b>${newQuestion}</b>`,
+      `🎁 Новая тема:\n\n<b>${newQuestion}</b>`,
       {
         parse_mode: "HTML",
         reply_markup: keyboard,
