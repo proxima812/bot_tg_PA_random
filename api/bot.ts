@@ -215,9 +215,13 @@ bot.on("callback_query", async ctx => {
 			// Создаем клавиатуру для отображения карточек
 			const keyboard = new InlineKeyboard()
 			cards.forEach(card => {
+				const formattedDesc = card.desc.replace(/^https?:\/\/t\.me\//, "t.me/")
+
+				// Сокращаем текст, если он слишком длинный
 				const shortDesc =
-					card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc
-				keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`)
+					formattedDesc.length > 30 ? `${formattedDesc.slice(0, 30)}...` : formattedDesc
+
+				keyboard.text(`#${card.id}: ${shortDesc}`, `view_card_${card.id}`)
 				keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row()
 			})
 
