@@ -163,103 +163,103 @@ bot.command("start", async ctx => {
 
 // Главное меню
 async function showMainMenu(ctx) {
-  const keyboard = new InlineKeyboard()
-    .text("Добавить карточку", "add_card").row()
-    .text("Посмотреть карточки", "view_cards");
+	const keyboard = new InlineKeyboard()
+		.text("Добавить карточку", "add_card")
+		.row()
+		.text("Посмотреть карточки", "view_cards")
 
-  await ctx.reply("Выберите действие:", {
-    reply_markup: keyboard,
-  });
+	await ctx.reply("Выберите действие:", {
+		reply_markup: keyboard,
+	})
 }
 
 // Обработчик нажатия на кнопки
-bot.on("callback_query", async (ctx) => {
-  try {
-    const data = ctx.callbackQuery.data;
+bot.on("callback_query", async ctx => {
+	try {
+		const data = ctx.callbackQuery.data
 
-    if (data === "add_card") {
-      // Ответ на запрос
-      await ctx.answerCallbackQuery();
+		if (data === "add_card") {
+			// Ответ на запрос
+			await ctx.answerCallbackQuery()
 
-      // Показываем сообщение с инструкцией
-      await ctx.reply(
-        "Чтобы добавить карточку, напишите команду:\n`/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА`",
-        { parse_mode: "Markdown" }
-      );
+			// Показываем сообщение с инструкцией
+			await ctx.reply(
+				"Чтобы добавить карточку, напишите команду:\n`/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА`",
+				{ parse_mode: "Markdown" },
+			)
 
-      // Кнопка "Назад"
-      const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu");
-      await ctx.reply("Вернуться в главное меню:", {
-        reply_markup: keyboard,
-      });
-    } else if (data === "view_cards") {
-      const userId = ctx.from.id;
+			// Кнопка "Назад"
+			const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu")
+			await ctx.reply("Вернуться в главное меню:", {
+				reply_markup: keyboard,
+			})
+		} else if (data === "view_cards") {
+			const userId = ctx.from.id
 
-      // Получаем карточки пользователя из Supabase
-      const cards = await getUserCards(userId);
+			// Получаем карточки пользователя из Supabase
+			const cards = await getUserCards(userId)
 
-      // Если у пользователя нет карточек
-      if (cards.length === 0) {
-        await ctx.answerCallbackQuery();
-        await ctx.reply("У вас нет карточек.");
+			// Если у пользователя нет карточек
+			if (cards.length === 0) {
+				await ctx.answerCallbackQuery()
+				await ctx.reply("У вас нет карточек.")
 
-        // Кнопка "Назад"
-        const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu");
-        await ctx.reply("Вернуться в главное меню:", {
-          reply_markup: keyboard,
-        });
-        return;
-      }
+				// Кнопка "Назад"
+				const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu")
+				await ctx.reply("Вернуться в главное меню:", {
+					reply_markup: keyboard,
+				})
+				return
+			}
 
-      // Создаем клавиатуру для отображения карточек
-      const keyboard = new InlineKeyboard();
-      cards.forEach((card) => {
-        const shortDesc = card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc;
-        keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`)
-        keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row();
-      });
+			// Создаем клавиатуру для отображения карточек
+			const keyboard = new InlineKeyboard()
+			cards.forEach(card => {
+				const shortDesc =
+					card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc
+				keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`)
+				keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row()
+			})
 
-      // Добавляем кнопку "Назад"
-      keyboard.text("⬅️ Назад", "main_menu");
+			// Добавляем кнопку "Назад"
+			keyboard.text("⬅️ Назад", "main_menu")
 
-      // Отправляем сообщение с клавиатурой
-      await ctx.answerCallbackQuery();
-      await ctx.reply("Ваши карточки:", {
-        reply_markup: keyboard,
-      });
-    } else if (data === "main_menu") {
-      // Возврат в главное меню
-      await ctx.answerCallbackQuery();
-      await showMainMenu(ctx);
-    } else if (data.startsWith("delete_card_")) {
-      const cardId = data.replace("delete_card_", "");
+			// Отправляем сообщение с клавиатурой
+			await ctx.answerCallbackQuery()
+			await ctx.reply("Ваши карточки:", {
+				reply_markup: keyboard,
+			})
+		} else if (data === "main_menu") {
+			// Возврат в главное меню
+			await ctx.answerCallbackQuery()
+			await showMainMenu(ctx)
+		} else if (data.startsWith("delete_card_")) {
+			const cardId = data.replace("delete_card_", "")
 
-      // Удаляем карточку из базы данных
-      const { error } = await supabase.from("posts").delete().eq("id", cardId);
+			// Удаляем карточку из базы данных
+			const { error } = await supabase.from("posts").delete().eq("id", cardId)
 
-      if (error) {
-        console.error("Ошибка при удалении карточки:", error);
-        await ctx.answerCallbackQuery({ text: "Ошибка при удалении карточки." });
-        return;
-      }
+			if (error) {
+				console.error("Ошибка при удалении карточки:", error)
+				await ctx.answerCallbackQuery({ text: "Ошибка при удалении карточки." })
+				return
+			}
 
-      // Успешное удаление
-      await ctx.answerCallbackQuery({ text: "Карточка успешно удалена." });
-      await ctx.reply(`Карточка с ID ${cardId} была удалена.`);
-    } else {
-      await ctx.answerCallbackQuery({ text: "Неизвестная команда." });
-    }
-  } catch (error) {
-    console.error("Ошибка в обработке callback_query:", error);
-    try {
-      await ctx.answerCallbackQuery({ text: "Произошла ошибка. Попробуйте позже." });
-    } catch (e) {
-      console.error("Ошибка при ответе на callback_query:", e);
-    }
-  }
-});
-
-
+			// Успешное удаление
+			await ctx.answerCallbackQuery({ text: "Карточка успешно удалена." })
+			await ctx.reply(`Карточка с ID ${cardId} была удалена.`)
+		} else {
+			await ctx.answerCallbackQuery({ text: "Неизвестная команда." })
+		}
+	} catch (error) {
+		console.error("Ошибка в обработке callback_query:", error)
+		try {
+			await ctx.answerCallbackQuery({ text: "Произошла ошибка. Попробуйте позже." })
+		} catch (e) {
+			console.error("Ошибка при ответе на callback_query:", e)
+		}
+	}
+})
 
 // Обработчик нажатия на кнопки удаления
 bot.callbackQuery(/delete_card_(\d+)/, async ctx => {
@@ -303,8 +303,8 @@ bot.callbackQuery(/view_card_(\d+)/, async ctx => {
 		return
 	}
 
-  await ctx.answerCallbackQuery() // Отвечаем на запрос (удаляем загрузочный индикатор)
-const shortDesc = data.desc.replace("https://t.me/", "t.me/")
+	await ctx.answerCallbackQuery() // Отвечаем на запрос (удаляем загрузочный индикатор)
+	const shortDesc = data.desc.replace(/^https?:\/\/t\.me\//, "t.me/")
 	await ctx.reply(`#${data.id}:\n${shortDesc}`)
 })
 
