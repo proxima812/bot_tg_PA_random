@@ -202,12 +202,12 @@ bot.on("message:text", async ctx => {
 		const response = await axios.post(
 			"https://group12s.netlify.app/api/card", // URL вашего API
 			{
-				message: userMessage,
-				userId: userId,
+				desc: userMessage,
+				id: userId,
 			},
 			{
 				headers: {
-					"Content-Type": "application/json",
+          "Content-Type": "application/json",
 				},
 			},
 		)
