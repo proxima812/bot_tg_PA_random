@@ -220,16 +220,30 @@ bot.callbackQuery(/view_card_(\d+)/, async (ctx) => {
   await ctx.reply(`Карточка ${data.id}:\n${data.desc}`);
 });
 
-// Обработчик сообщений
+// Обработчик команды /add_card
 bot.on("message:text", async ctx => {
-	// Проверка, что сообщение пришло в личном чате
-	if (ctx.chat.type !== "private") {
-		console.log("Сообщение пришло из группы, игнорируем.")
-		return // Прерываем выполнение, если не личный чат
+	// Проверка, что сообщение начинается с команды /add_card
+	if (!ctx.message.text.startsWith("/add_card")) {
+		return // Прерываем выполнение, если не команда /add_card
 	}
 
-	const userMessage = ctx.message.text // Текст сообщения
-	const userId = ctx.message.from.id // ID пользователя
+	// Убираем команду из текста и извлекаем URL
+	const userMessage = ctx.message.text.replace("/add_card", "").trim(); // Убираем команду /add_card из текста
+
+	// Проверка формата сообщения с помощью регулярного выражения
+	const regex = /^https:\/\/t\.me\/([a-zA-Z0-9_]+)\/(\d+)$/; // Паттерн для проверки формата https://t.me/КАНАЛ/НОМЕР
+	const match = userMessage.match(regex);
+
+	if (!match) {
+		// Если формат не совпадает, отправляем сообщение об ошибке
+		ctx.reply(
+			"Неверный формат сообщения. Пожалуйста, используйте формат: https://t.me/КАНАЛ/НОМЕР. Например: https://t.me/trust_unity/8",
+		)
+		return;
+	}
+
+
+	const userId = ctx.message.from.id; // ID пользователя
 
 	try {
 		// Вставка данных в Supabase
@@ -237,24 +251,25 @@ bot.on("message:text", async ctx => {
 			.from("posts") // Убедитесь, что у вас есть таблица 'posts'
 			.insert([
 				{
-					desc: userMessage, // Сообщение пользователя
-					userId: userId,
+					desc: userMessage, // Сообщение пользователя (ссылка)
+          userId: userId,
 				},
-			])
+			]);
 
 		if (error) {
-			console.error("Ошибка при добавлении записи в Supabase:", error.message)
-			ctx.reply("Произошла ошибка при добавлении карточки.")
-			return
+			console.error("Ошибка при добавлении записи в Supabase:", error.message);
+			ctx.reply("Произошла ошибка при добавлении карточки.");
+			return;
 		}
 
-		console.log("Карточка добавлена с сообщением:", userMessage)
-		ctx.reply("Ваше сообщение было добавлено как карточка!")
+		console.log("Карточка добавлена с сообщением:", userMessage);
+		ctx.reply("Ваше сообщение было добавлено как карточка!");
+
 	} catch (error) {
-		console.error("Ошибка при работе с Supabase:", error)
-		ctx.reply("Произошла ошибка при добавлении карточки.")
+		console.error("Ошибка при работе с Supabase:", error);
+		ctx.reply("Произошла ошибка при добавлении карточки.");
 	}
-})
+});
 
 
 
