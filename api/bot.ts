@@ -120,102 +120,109 @@ bot.callbackQuery("new_question", async ctx => {
 		console.error("Ошибка при удалении сообщения или отправке нового", error)
 	}
 })
-
 // Функция для получения карточек пользователя из Supabase
 async function getUserCards(userId) {
-	const { data, error } = await supabase.from("posts").select("*").eq("userId", userId) // Получаем карточки, где userId совпадает с ID текущего пользователя
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('userId', userId); // Получаем карточки, где userId совпадает с ID текущего пользователя
 
-	if (error) {
-		console.error("Ошибка при получении карточек:", error)
-		return []
-	}
-	return data
+  if (error) {
+    console.error('Ошибка при получении карточек:', error);
+    return [];
+  }
+  return data;
 }
 
 // Функция для удаления карточки из Supabase
 async function deleteCard(cardId) {
-	const { data, error } = await supabase.from("posts").delete().eq("id", cardId) // Удаляем карточку с соответствующим id
+  const { data, error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', cardId); // Удаляем карточку с соответствующим id
 
-	if (error) {
-		console.error("Ошибка при удалении карточки:", error)
-		return false
-	}
-	return true
+  if (error) {
+    console.error('Ошибка при удалении карточки:', error);
+    return false;
+  }
+  return true;
 }
 
-bot.command("/get_posts", async ctx => {
-	const userId = ctx.from.id
-	// Получаем карточки пользователя из Supabase
-	const cards = await getUserCards(userId)
+// Обработчик команды /start
+bot.command('start', async (ctx) => {
+  const userId = ctx.from.id;
 
-	if (cards.length === 0) {
-		ctx.reply("У вас нет карточек.")
-		return
-	}
+  // Получаем карточки пользователя из Supabase
+  const cards = await getUserCards(userId);
 
-	// Создаем клавиатуру с кнопками для удаления карточек
-	const keyboard = cards.map(card => [
-		{
-			text: `Карточка ${card.id}: ${card.desc}`,
-			callback_data: `view_card_${card.id}`,
-		},
-		{
-			text: "Удалить",
-			callback_data: `delete_card_${card.id}`,
-		},
-	])
+  if (cards.length === 0) {
+    await ctx.reply('У вас нет карточек.');
+    return;
+  }
 
-	// Отправляем сообщения с кнопками для каждой карточки
-	ctx.reply("Ваши карточки:", {
-		reply_markup: {
-			inline_keyboard: keyboard,
-		},
-	})
-})
+  // Создаем клавиатуру с кнопками для удаления карточек
+  const keyboard = cards.map((card) => [
+    {
+      text: `Карточка ${card.id}: ${card.desc}`,
+      callback_data: `view_card_${card.id}`,
+    },
+    {
+      text: 'Удалить',
+      callback_data: `delete_card_${card.id}`,
+    },
+  ]);
 
-bot.command("/get_posts", async ctx => {
-	const userId = ctx.from.id
-	const cardId = ctx.match[1]
+  // Отправляем сообщения с кнопками для каждой карточки
+  await ctx.reply('Ваши карточки:', {
+    reply_markup: InlineKeyboard(keyboard),
+  });
+});
 
-	// Проверка, что карточка принадлежит текущему пользователю
-	const cards = await getUserCards(userId)
+// Обработчик нажатия на кнопки удаления
+bot.callbackQuery(/delete_card_(\d+)/, async (ctx) => {
+  const userId = ctx.from.id;
+  const cardId = ctx.match[1];
 
-	const card = cards.find(card => card.id.toString() === cardId.toString())
+  // Проверка, что карточка принадлежит текущему пользователю
+  const cards = await getUserCards(userId);
 
-	if (!card) {
-		ctx.reply("Эта карточка не принадлежит вам.")
-		return
-	}
+  const card = cards.find((card) => card.id.toString() === cardId.toString());
 
-	// Удаление карточки
-	const success = await deleteCard(cardId)
+  if (!card) {
+    await ctx.answerCallbackQuery('Эта карточка не принадлежит вам.');
+    return;
+  }
 
-	if (success) {
-		ctx.reply("Карточка успешно удалена!")
-	} else {
-		ctx.reply("Произошла ошибка при удалении карточки.")
-	}
-})
+  // Удаление карточки
+  const success = await deleteCard(cardId);
 
+  if (success) {
+    await ctx.answerCallbackQuery('Карточка успешно удалена!');
+    await ctx.editMessageText(`Карточка ${cardId} была удалена.`);
+  } else {
+    await ctx.answerCallbackQuery('Произошла ошибка при удалении карточки.');
+  }
+});
 
-// получить посты
-bot.command("/view_card", async ctx => {
-	const cardId = ctx.match[1]
+// Обработчик нажатия на кнопку "Посмотреть карточку"
+bot.callbackQuery(/view_card_(\d+)/, async (ctx) => {
+  const cardId = ctx.match[1];
 
-	// Получаем информацию о карточке
-	const { data, error } = await supabase
-		.from("posts")
-		.select("*")
-		.eq("id", cardId)
-		.single() // Получаем карточку с конкретным id
+  // Получаем информацию о карточке
+  const { data, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', cardId)
+    .single(); // Получаем карточку с конкретным id
 
-	if (error || !data) {
-		ctx.reply("Карточка не найдена.")
-		return
-	}
+  if (error || !data) {
+    await ctx.answerCallbackQuery('Карточка не найдена.');
+    return;
+  }
 
-	ctx.reply(`Карточка ${data.id}:\n${data.desc}`)
-})
+  await ctx.answerCallbackQuery(); // Отвечаем на запрос (удаляем загрузочный индикатор)
+  await ctx.reply(`Карточка ${data.id}:\n${data.desc}`);
+});
 
 // Обработчик сообщений
 bot.on("message:text", async ctx => {
