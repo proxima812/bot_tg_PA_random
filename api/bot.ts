@@ -199,9 +199,14 @@ bot.on("message:text", async ctx => {
 				message: userMessage,
 				userId: userId,
 			},
+			{
+				headers: {
+					"Content-Type": "application/json",
+				},
+			},
 		)
 
-		ctx.reply("Ответ от сервера:", response.data) // Логирование ответа от сервера
+		console.log("Ответ от сервера:", response.data) // Логирование ответа от сервера
 
 		ctx.reply("Ваше сообщение было добавлено как карточка!")
 	} catch (error) {
