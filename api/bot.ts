@@ -1,4 +1,5 @@
 require("dotenv").config()
+import { createClient } from '@supabase/supabase-js'
 import { Bot, InlineKeyboard, webhookCallback } from "grammy"
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
