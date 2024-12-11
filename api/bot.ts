@@ -303,8 +303,9 @@ bot.callbackQuery(/view_card_(\d+)/, async ctx => {
 		return
 	}
 
-	await ctx.answerCallbackQuery() // Отвечаем на запрос (удаляем загрузочный индикатор)
-	await ctx.reply(`Карточка ${data.id}:\n${data.desc}`)
+  await ctx.answerCallbackQuery() // Отвечаем на запрос (удаляем загрузочный индикатор)
+const shortDesc = data.desc.replace("https://t.me/", "t.me/")
+	await ctx.reply(`#${data.id}:\n${shortDesc}`)
 })
 
 // Обработчик команды /add_card
