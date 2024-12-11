@@ -161,7 +161,18 @@ bot.command("start", async ctx => {
 	})
 })
 
-// Обработчик нажатия на кнопку
+// Главное меню
+async function showMainMenu(ctx) {
+  const keyboard = new InlineKeyboard()
+    .text("Добавить карточку", "add_card").row()
+    .text("Посмотреть карточки", "view_cards");
+
+  await ctx.reply("Выберите действие:", {
+    reply_markup: keyboard,
+  });
+}
+
+// Обработчик нажатия на кнопки
 bot.on("callback_query", async (ctx) => {
   try {
     const data = ctx.callbackQuery.data;
@@ -169,10 +180,18 @@ bot.on("callback_query", async (ctx) => {
     if (data === "add_card") {
       // Ответ на запрос
       await ctx.answerCallbackQuery();
+
+      // Показываем сообщение с инструкцией
       await ctx.reply(
         "Чтобы добавить карточку, напишите команду:\n`/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА`",
         { parse_mode: "Markdown" }
       );
+
+      // Кнопка "Назад"
+      const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu");
+      await ctx.reply("Вернуться в главное меню:", {
+        reply_markup: keyboard,
+      });
     } else if (data === "view_cards") {
       const userId = ctx.from.id;
 
@@ -183,26 +202,37 @@ bot.on("callback_query", async (ctx) => {
       if (cards.length === 0) {
         await ctx.answerCallbackQuery();
         await ctx.reply("У вас нет карточек.");
+
+        // Кнопка "Назад"
+        const keyboard = new InlineKeyboard().text("⬅️ Назад", "main_menu");
+        await ctx.reply("Вернуться в главное меню:", {
+          reply_markup: keyboard,
+        });
         return;
       }
 
       // Создаем клавиатуру для отображения карточек
       const keyboard = new InlineKeyboard();
       cards.forEach((card) => {
-        // Сокращаем текст карточки, если он слишком длинный
         const shortDesc = card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc;
         keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`).row();
         keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row();
       });
 
+      // Добавляем кнопку "Назад"
+      keyboard.text("⬅️ Назад", "main_menu");
+
       // Отправляем сообщение с клавиатурой
       await ctx.answerCallbackQuery();
       await ctx.reply("Ваши карточки:", {
-        reply_markup: keyboard, // Передаем клавиатуру с карточками
+        reply_markup: keyboard,
       });
+    } else if (data === "main_menu") {
+      // Возврат в главное меню
+      await ctx.answerCallbackQuery();
+      await showMainMenu(ctx);
     } else if (data.startsWith("delete_card_")) {
-      // Обработка кнопки удаления
-      const cardId = data.replace("delete_card_", ""); // Извлекаем ID карточки
+      const cardId = data.replace("delete_card_", "");
 
       // Удаляем карточку из базы данных
       const { error } = await supabase.from("posts").delete().eq("id", cardId);
@@ -217,7 +247,6 @@ bot.on("callback_query", async (ctx) => {
       await ctx.answerCallbackQuery({ text: "Карточка успешно удалена." });
       await ctx.reply(`Карточка с ID ${cardId} была удалена.`);
     } else {
-      // Обработка неизвестных запросов
       await ctx.answerCallbackQuery({ text: "Неизвестная команда." });
     }
   } catch (error) {
@@ -229,6 +258,7 @@ bot.on("callback_query", async (ctx) => {
     }
   }
 });
+
 
 
 // Обработчик нажатия на кнопки удаления
