@@ -200,7 +200,7 @@ bot.on("message:text", async ctx => {
 
 	try {
 		const response = await axios.post(
-			"https://group12s.netlify.app/api/card/", // URL вашего API
+			"https://test-sanity228.netlify.app/api/card", // URL вашего API
 			{
 				message: userMessage,
 				userId: userId,
