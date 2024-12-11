@@ -148,7 +148,7 @@ async function deleteCard(cardId) {
   return true;
 }
 
-// Обработчик команды /start
+/// Обработчик команды /start
 bot.command('start', async (ctx) => {
   const userId = ctx.from.id;
 
@@ -161,20 +161,16 @@ bot.command('start', async (ctx) => {
   }
 
   // Создаем клавиатуру с кнопками для удаления карточек
-  const keyboard = cards.map((card) => [
-    {
-      text: `Карточка ${card.id}: ${card.desc}`,
-      callback_data: `view_card_${card.id}`,
-    },
-    {
-      text: 'Удалить',
-      callback_data: `delete_card_${card.id}`,
-    },
-  ]);
+  const keyboard = new InlineKeyboard(); // Используем 'new InlineKeyboard()'
+  cards.forEach((card) => {
+    keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`);
+    keyboard.row();
+    keyboard.text('Удалить', `delete_card_${card.id}`);
+  });
 
   // Отправляем сообщения с кнопками для каждой карточки
   await ctx.reply('Ваши карточки:', {
-    reply_markup: InlineKeyboard(keyboard),
+    reply_markup: keyboard, // Передаем клавиатуру
   });
 });
 
