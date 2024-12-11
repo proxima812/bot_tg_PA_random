@@ -117,13 +117,16 @@ bot.callbackQuery("new_question", async ctx => {
 })
 // Функция для получения карточек пользователя из Supabase
 async function getUserCards(userId) {
-	const { data, error } = await supabase.from("posts").select("*").eq("userId", userId) // Получаем карточки, где userId совпадает с ID текущего пользователя
+	const { data, error } = await supabase
+		.from("posts")
+		.select("id, desc")
+		.eq("userId", userId)
 
 	if (error) {
 		console.error("Ошибка при получении карточек:", error)
 		return []
 	}
-	return data
+	return data || []
 }
 
 // Функция для удаления карточки из Supabase
