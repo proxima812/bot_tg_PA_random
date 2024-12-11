@@ -171,7 +171,7 @@ bot.on("callback_query", async (ctx) => {
       await ctx.answerCallbackQuery();
       await ctx.reply(
         "Чтобы добавить карточку, напишите команду:\n`/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА`",
-        { parse_mode: "Markdown" } // Форматирование текста
+        { parse_mode: "Markdown" }
       );
     } else if (data === "view_cards") {
       const userId = ctx.from.id;
@@ -200,6 +200,22 @@ bot.on("callback_query", async (ctx) => {
       await ctx.reply("Ваши карточки:", {
         reply_markup: keyboard, // Передаем клавиатуру с карточками
       });
+    } else if (data.startsWith("delete_card_")) {
+      // Обработка кнопки удаления
+      const cardId = data.replace("delete_card_", ""); // Извлекаем ID карточки
+
+      // Удаляем карточку из базы данных
+      const { error } = await supabase.from("posts").delete().eq("id", cardId);
+
+      if (error) {
+        console.error("Ошибка при удалении карточки:", error);
+        await ctx.answerCallbackQuery({ text: "Ошибка при удалении карточки." });
+        return;
+      }
+
+      // Успешное удаление
+      await ctx.answerCallbackQuery({ text: "Карточка успешно удалена." });
+      await ctx.reply(`Карточка с ID ${cardId} была удалена.`);
     } else {
       // Обработка неизвестных запросов
       await ctx.answerCallbackQuery({ text: "Неизвестная команда." });
@@ -213,6 +229,7 @@ bot.on("callback_query", async (ctx) => {
     }
   }
 });
+
 
 // Обработчик нажатия на кнопки удаления
 bot.callbackQuery(/delete_card_(\d+)/, async ctx => {
