@@ -7,28 +7,13 @@ const setMood = require("../handlers/setMood.js")
 const quotes = require("../handlers/quotes.js")
 const js = require("../handlers/js.js")
 const bk = require("../handlers/bk.js")
-const tr = require("../handlers/tr.js")
 
 const supabase = createClient(
 	"https://fkwivycaacgpuwfvozlp.supabase.co", // URL вашего проекта Supabase
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrd2l2eWNhYWNncHV3ZnZvemxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MDc4MTEsImV4cCI6MjA0OTQ4MzgxMX0.44dYay0RWos4tqwuj6H-ylqN4TrAIabeQLNzBn6Xuy0", // Ваш ключ API Supabase
 )
 
-// Определяем массив традиций
-// const traditions = [
-// 	"Традиция 1",
-// 	"Традиция 2",
-// 	"Традиция 3",
-// 	"Традиция 4",
-// 	"Традиция 5",
-// 	"Традиция 6",
-// 	"Традиция 7",
-// 	"Традиция 8",
-// 	"Традиция 9",
-// 	"Традиция 10",
-// 	"Традиция 11",
-// 	"Традиция 12",
-// ]
+
 
 const token = process.env.TOKEN
 if (!token) throw new Error("TOKEN is unset")
@@ -54,25 +39,6 @@ const sendMessage = async (ctx, text, options = {}) => {
 	}
 }
 
-// Функция для удаления предыдущих сообщений (очистка чата)
-const deletePreviousMessages = async ctx => {
-	const chatId = ctx.chat.id
-	const commandsList = ["/bk", "/q", "/tr", "/js", "/idea", "/set", "/b"] // Список команд для удаления
-
-	// Проверяем, существует ли сообщение и текст сообщения
-	if (ctx.message && ctx.message.text) {
-		const text = ctx.message.text
-
-		// Проверяем, начинается ли сообщение с одной из команд в списке
-		if (commandsList.some(command => text.startsWith(command))) {
-			try {
-				await ctx.api.deleteMessage(chatId, ctx.message.message_id) // Удаляем сообщение
-			} catch (error) {
-				console.error("Error deleting command message:", error.toString()) // Логируем ошибку
-			}
-		}
-	}
-}
 
 // Функция для выбора случайного вопроса
 const getRandomQuestion = () => {
@@ -81,13 +47,7 @@ const getRandomQuestion = () => {
 
 // Объект с командами
 const commands = {
-	// "/q": async (ctx, mention) => {
-	// 	const question = questions[Math.floor(Math.random() * questions.length)]
-	// 	await sendMessage(
-	// 		ctx,
-	// 		`(команда /q)\n🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
-	// 	)
-	// },
+
 	"/idea": async (ctx, mention) => {
 		const idea = ideasWithEmojis[Math.floor(Math.random() * ideasWithEmojis.length)]
 		await sendMessage(
@@ -117,22 +77,6 @@ const commands = {
 		)
 	},
 
-	// "/tr": async ctx => {
-	// 	// Создаем клавиатуру
-	// 	const inlineKeyboard = new InlineKeyboard()
-
-	// 	// Добавляем кнопки в две колонки
-	// 	traditions.forEach((tradition, index) => {
-	// 		inlineKeyboard.add({ text: tradition, callback_data: `tradition_${index}` })
-
-	// 		// Добавляем дополнительный ряд каждые 2 кнопки
-	// 		if ((index + 1) % 2 === 0) {
-	// 			inlineKeyboard.row() // Создает новый ряд после каждой второй кнопки
-	// 		}
-	// 	})
-
-	// 	await ctx.reply("Выберите традицию для изучения:", { reply_markup: inlineKeyboard })
-	// },
 	"/b": async (ctx, mention) => {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)]
 		await sendMessage(
@@ -142,21 +86,6 @@ const commands = {
 	},
 }
 
-// Обработка нажатий на кнопки
-// bot.on("callback_query:data", async ctx => {
-// 	const callbackData = ctx.callbackQuery.data
-
-// 	if (callbackData.startsWith("tradition_")) {
-// 		const index = parseInt(callbackData.split("_")[1]) // Извлекаем индекс традиции
-
-// 		// Получаем текст описания традиции по индексу
-// 		const traditionText = tr[index]
-
-// 		await ctx.answerCallbackQuery() // Подтверждаем нажатие
-
-// 		await sendMessage(ctx, traditionText) // Отправляем текст традиции
-// 	}
-// })
 
 // Обработчик команды /q
 bot.command("q", async ctx => {
@@ -268,7 +197,9 @@ bot.command("/get_posts", async ctx => {
 	}
 })
 
-bot.command("/get_posts", async ctx => {
+
+// получить посты
+bot.command("/view_card", async ctx => {
 	const cardId = ctx.match[1]
 
 	// Получаем информацию о карточке
@@ -321,6 +252,9 @@ bot.on("message:text", async ctx => {
 		ctx.reply("Произошла ошибка при добавлении карточки.")
 	}
 })
+
+
+
 
 // Обработка сообщений
 bot.on("message", async ctx => {
