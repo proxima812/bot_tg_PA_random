@@ -158,44 +158,58 @@ bot.command("start", async ctx => {
 	})
 })
 
-// Обработчик нажатия на кнопку "Добавить карточку"
-bot.on("callback_query", async ctx => {
-	if (ctx.callbackQuery.data === "add_card") {
-		// Ответ с инструкцией по добавлению карточки
-		await ctx.answerCallbackQuery()
-		await ctx.reply(
-			"Чтобы добавить карточку, напишите команду /add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА",
-		)
-	}
+// Обработчик нажатия на кнопку
+bot.on("callback_query", async (ctx) => {
+  try {
+    const data = ctx.callbackQuery.data;
 
-	// Обработчик нажатия на кнопку "Посмотреть свои карточки"
-	if (ctx.callbackQuery.data === "view_cards") {
-		const userId = ctx.from.id
+    if (data === "add_card") {
+      // Ответ на запрос
+      await ctx.answerCallbackQuery();
+      await ctx.reply(
+        "Чтобы добавить карточку, напишите команду:\n`/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА`",
+        { parse_mode: "Markdown" } // Форматирование текста
+      );
+    } else if (data === "view_cards") {
+      const userId = ctx.from.id;
 
-		// Получаем карточки пользователя из Supabase
-		const cards = await getUserCards(userId)
+      // Получаем карточки пользователя из Supabase
+      const cards = await getUserCards(userId);
 
-		// Если у пользователя нет карточек
-		if (cards.length === 0) {
-			await ctx.answerCallbackQuery()
-			await ctx.reply("У вас нет карточек.")
-			return
-		}
+      // Если у пользователя нет карточек
+      if (cards.length === 0) {
+        await ctx.answerCallbackQuery();
+        await ctx.reply("У вас нет карточек.");
+        return;
+      }
 
-		// Создаем клавиатуру для отображения карточек
-		const keyboard = new InlineKeyboard()
-		cards.forEach(card => {
-			keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`)
-			keyboard.text("Удалить", `delete_card_${card.id}`)
-		})
+      // Создаем клавиатуру для отображения карточек
+      const keyboard = new InlineKeyboard();
+      cards.forEach((card) => {
+        // Сокращаем текст карточки, если он слишком длинный
+        const shortDesc = card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc;
+        keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`).row();
+        keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row();
+      });
 
-		// Отправляем сообщение с клавиатурой
-		await ctx.answerCallbackQuery()
-		await ctx.reply("Ваши карточки:", {
-			reply_markup: keyboard, // Передаем клавиатуру с карточками
-		})
-	}
-})
+      // Отправляем сообщение с клавиатурой
+      await ctx.answerCallbackQuery();
+      await ctx.reply("Ваши карточки:", {
+        reply_markup: keyboard, // Передаем клавиатуру с карточками
+      });
+    } else {
+      // Обработка неизвестных запросов
+      await ctx.answerCallbackQuery({ text: "Неизвестная команда." });
+    }
+  } catch (error) {
+    console.error("Ошибка в обработке callback_query:", error);
+    try {
+      await ctx.answerCallbackQuery({ text: "Произошла ошибка. Попробуйте позже." });
+    } catch (e) {
+      console.error("Ошибка при ответе на callback_query:", e);
+    }
+  }
+});
 
 // Обработчик нажатия на кнопки удаления
 bot.callbackQuery(/delete_card_(\d+)/, async ctx => {
