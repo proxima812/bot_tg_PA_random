@@ -1,6 +1,6 @@
 require("dotenv").config()
+import axios from "axios"
 import { Bot, InlineKeyboard, webhookCallback } from "grammy"
-import axios from 'axios'
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
 const setMood = require("../handlers/setMood.js")
@@ -51,28 +51,28 @@ const sendMessage = async (ctx, text, options = {}) => {
 
 // Функция для удаления предыдущих сообщений (очистка чата)
 const deletePreviousMessages = async ctx => {
-    const chatId = ctx.chat.id;
-    const commandsList = ["/bk", "/q", "/tr", "/js", "/idea", "/set", "/b"]; // Список команд для удаления
+	const chatId = ctx.chat.id
+	const commandsList = ["/bk", "/q", "/tr", "/js", "/idea", "/set", "/b"] // Список команд для удаления
 
-    // Проверяем, существует ли сообщение и текст сообщения
-    if (ctx.message && ctx.message.text) {
-        const text = ctx.message.text;
+	// Проверяем, существует ли сообщение и текст сообщения
+	if (ctx.message && ctx.message.text) {
+		const text = ctx.message.text
 
-        // Проверяем, начинается ли сообщение с одной из команд в списке
-        if (commandsList.some(command => text.startsWith(command))) {
-            try {
-                await ctx.api.deleteMessage(chatId, ctx.message.message_id); // Удаляем сообщение
-            } catch (error) {
-                console.error("Error deleting command message:", error.toString()); // Логируем ошибку
-            }
-        }
-    }
-};
+		// Проверяем, начинается ли сообщение с одной из команд в списке
+		if (commandsList.some(command => text.startsWith(command))) {
+			try {
+				await ctx.api.deleteMessage(chatId, ctx.message.message_id) // Удаляем сообщение
+			} catch (error) {
+				console.error("Error deleting command message:", error.toString()) // Логируем ошибку
+			}
+		}
+	}
+}
 
 // Функция для выбора случайного вопроса
 const getRandomQuestion = () => {
-  return questions[Math.floor(Math.random() * questions.length)];
-};
+	return questions[Math.floor(Math.random() * questions.length)]
+}
 
 // Объект с командами
 const commands = {
@@ -153,75 +153,66 @@ const commands = {
 // 	}
 // })
 
-
 // Обработчик команды /q
-bot.command("q", async (ctx) => {
-  const mention = ctx.from.first_name || "пользователь"; // Получаем имя пользователя
-  const question = getRandomQuestion(); // Получаем случайный вопрос
+bot.command("q", async ctx => {
+	const mention = ctx.from.first_name || "пользователь" // Получаем имя пользователя
+	const question = getRandomQuestion() // Получаем случайный вопрос
 
-  // Создаем inline-клавиатуру
-  const keyboard = new InlineKeyboard().text("Другой вопрос", "new_question");
+	// Создаем inline-клавиатуру
+	const keyboard = new InlineKeyboard().text("Другой вопрос", "new_question")
 
-  // Отправляем сообщение с кнопкой
-  await ctx.reply(
-    `🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`,
-    {
-      parse_mode: "HTML",
-      reply_markup: keyboard,
-    }
-  );
-});
+	// Отправляем сообщение с кнопкой
+	await ctx.reply(`🎁 Рандомная тема для ${mention}:\n\n<b>${question}</b>`, {
+		parse_mode: "HTML",
+		reply_markup: keyboard,
+	})
+})
 
 // Обработчик callback-запроса на кнопку "Другой вопрос"
-bot.callbackQuery("new_question", async (ctx) => {
-  const newQuestion = getRandomQuestion(); // Новый случайный вопрос
+bot.callbackQuery("new_question", async ctx => {
+	const newQuestion = getRandomQuestion() // Новый случайный вопрос
 
-  try {
-    // Удаляем предыдущее сообщение
-    await ctx.deleteMessage();
+	try {
+		// Удаляем предыдущее сообщение
+		await ctx.deleteMessage()
 
-    // Отправляем новое сообщение с кнопкой
-    const keyboard = new InlineKeyboard().text("Другая тема", "new_question");
-    await ctx.reply(
-      `🎁 Новая тема:\n\n<b>${newQuestion}</b>`,
-      {
-        parse_mode: "HTML",
-        reply_markup: keyboard,
-      }
-    );
-  } catch (error) {
-    console.error("Ошибка при удалении сообщения или отправке нового", error);
-  }
-});
+		// Отправляем новое сообщение с кнопкой
+		const keyboard = new InlineKeyboard().text("Другая тема", "new_question")
+		await ctx.reply(`🎁 Новая тема:\n\n<b>${newQuestion}</b>`, {
+			parse_mode: "HTML",
+			reply_markup: keyboard,
+		})
+	} catch (error) {
+		console.error("Ошибка при удалении сообщения или отправке нового", error)
+	}
+})
 
 // Обработчик сообщений
-bot.on("message:text", async (ctx) => {
-  const userMessage = ctx.message.text
-  const userId = ctx.message.from.id
+bot.on("message:text", async ctx => {
+	const userMessage = ctx.message.text
+	const userId = ctx.message.from.id
 
-  // Отправляем сообщение на сайт Astro.js через API
-  try {
-    const response = await axios.post(
-      "http://localhost:4321/api/card",  // URL вашего API
-      {
-        message: userMessage,
-        userId: userId,
-      }
-    )
+	try {
+		const response = await axios.post(
+			"http://localhost:4321/api/card/", // URL вашего API
+			{
+				message: userMessage,
+				userId: userId,
+			},
+		)
 
-    // Ответ пользователю
-    ctx.reply("Ваше сообщение было добавлено как карточка!")
-  } catch (error) {
-    console.error("Ошибка при отправке данных на сайт:", error)
-    ctx.reply("Произошла ошибка при добавлении карточки.")
-  }
+		ctx.reply("Ответ от сервера:", response.data) // Логирование ответа от сервера
+
+		ctx.reply("Ваше сообщение было добавлено как карточка!")
+	} catch (error) {
+		console.error("Ошибка при отправке данных на сайт:", error)
+		ctx.reply("Произошла ошибка при добавлении карточки.")
+	}
 })
 
 // Обработка сообщений
 bot.on("message", async ctx => {
-
-
-  if (!ctx.message || !ctx.message.text) {
+	if (!ctx.message || !ctx.message.text) {
 		console.log("Received a non-text message or an undefined message.")
 		return // Если нет текста, выходим из функции
 	}
