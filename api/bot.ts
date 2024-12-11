@@ -1,6 +1,6 @@
 require("dotenv").config()
 import { Bot, InlineKeyboard, webhookCallback } from "grammy"
-
+import axios from 'axios'
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
 const setMood = require("../handlers/setMood.js")
@@ -193,6 +193,29 @@ bot.callbackQuery("new_question", async (ctx) => {
     console.error("Ошибка при удалении сообщения или отправке нового", error);
   }
 });
+
+// Обработчик сообщений
+bot.on("message:text", async (ctx) => {
+  const userMessage = ctx.message.text
+  const userId = ctx.message.from.id
+
+  // Отправляем сообщение на сайт Astro.js через API
+  try {
+    const response = await axios.post(
+      "http://localhost:4321/api/card",  // URL вашего API
+      {
+        message: userMessage,
+        userId: userId,
+      }
+    )
+
+    // Ответ пользователю
+    ctx.reply("Ваше сообщение было добавлено как карточка!")
+  } catch (error) {
+    console.error("Ошибка при отправке данных на сайт:", error)
+    ctx.reply("Произошла ошибка при добавлении карточки.")
+  }
+})
 
 // Обработка сообщений
 bot.on("message", async ctx => {
