@@ -148,30 +148,40 @@ async function deleteCard(cardId) {
   return true;
 }
 
-/// Обработчик команды /start
+// Обработчик команды /start
 bot.command('start', async (ctx) => {
-  const userId = ctx.from.id;
+	const userId = ctx.from.id;
 
-  // Получаем карточки пользователя из Supabase
-  const cards = await getUserCards(userId);
+	// Получаем карточки пользователя из Supabase
+	const cards = await getUserCards(userId);
 
-  if (cards.length === 0) {
-    await ctx.reply('У вас нет карточек.');
-    return;
-  }
+	// Если у пользователя нет карточек, сообщаем об этом
+	if (cards.length === 0) {
+		await ctx.reply("У вас нет карточек.");
+		return;
+	}
 
-  // Создаем клавиатуру с кнопками для удаления карточек
-  const keyboard = new InlineKeyboard(); // Используем 'new InlineKeyboard()'
-  cards.forEach((card) => {
-    keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`);
-    keyboard.row();
-    keyboard.text('Удалить', `delete_card_${card.id}`);
-  });
+	// Создаем клавиатуру
+	const keyboard = new InlineKeyboard();
 
-  // Отправляем сообщения с кнопками для каждой карточки
-  await ctx.reply('Ваши карточки:', {
-    reply_markup: keyboard, // Передаем клавиатуру
-  });
+	// Добавляем кнопки для команд
+	keyboard.text('Добавить карточку', '/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА');
+	keyboard.row();
+	keyboard.text('Посмотреть свои карточки', '/start');
+	keyboard.row();
+
+	// Добавляем кнопки для карточек
+	cards.forEach(card => {
+		keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`);
+		keyboard.row();
+		keyboard.text('Удалить', `delete_card_${card.id}`);
+		keyboard.row();
+	});
+
+	// Отправляем сообщение с клавиатурой
+	await ctx.reply('Ваши карточки и доступные команды:', {
+		reply_markup: keyboard, // Передаем клавиатуру
+	});
 });
 
 // Обработчик нажатия на кнопки удаления
