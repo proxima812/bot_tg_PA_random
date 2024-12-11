@@ -1,5 +1,5 @@
 require("dotenv").config()
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from "@supabase/supabase-js"
 import { Bot, InlineKeyboard, webhookCallback } from "grammy"
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
@@ -192,6 +192,100 @@ bot.callbackQuery("new_question", async ctx => {
 	}
 })
 
+// Функция для получения карточек пользователя из Supabase
+async function getUserCards(userId) {
+	const { data, error } = await supabase.from("posts").select("*").eq("userId", userId) // Получаем карточки, где userId совпадает с ID текущего пользователя
+
+	if (error) {
+		console.error("Ошибка при получении карточек:", error)
+		return []
+	}
+	return data
+}
+
+// Функция для удаления карточки из Supabase
+async function deleteCard(cardId) {
+	const { data, error } = await supabase.from("posts").delete().eq("id", cardId) // Удаляем карточку с соответствующим id
+
+	if (error) {
+		console.error("Ошибка при удалении карточки:", error)
+		return false
+	}
+	return true
+}
+
+bot.command("/get_posts", async ctx => {
+	const userId = ctx.from.id
+	// Получаем карточки пользователя из Supabase
+	const cards = await getUserCards(userId)
+
+	if (cards.length === 0) {
+		ctx.reply("У вас нет карточек.")
+		return
+	}
+
+	// Создаем клавиатуру с кнопками для удаления карточек
+	const keyboard = cards.map(card => [
+		{
+			text: `Карточка ${card.id}: ${card.desc}`,
+			callback_data: `view_card_${card.id}`,
+		},
+		{
+			text: "Удалить",
+			callback_data: `delete_card_${card.id}`,
+		},
+	])
+
+	// Отправляем сообщения с кнопками для каждой карточки
+	ctx.reply("Ваши карточки:", {
+		reply_markup: {
+			inline_keyboard: keyboard,
+		},
+	})
+})
+
+bot.command("/get_posts", async ctx => {
+	const userId = ctx.from.id
+	const cardId = ctx.match[1]
+
+	// Проверка, что карточка принадлежит текущему пользователю
+	const cards = await getUserCards(userId)
+
+	const card = cards.find(card => card.id.toString() === cardId.toString())
+
+	if (!card) {
+		ctx.reply("Эта карточка не принадлежит вам.")
+		return
+	}
+
+	// Удаление карточки
+	const success = await deleteCard(cardId)
+
+	if (success) {
+		ctx.reply("Карточка успешно удалена!")
+	} else {
+		ctx.reply("Произошла ошибка при удалении карточки.")
+	}
+})
+
+bot.command("/get_posts", async ctx => {
+	const cardId = ctx.match[1]
+
+	// Получаем информацию о карточке
+	const { data, error } = await supabase
+		.from("posts")
+		.select("*")
+		.eq("id", cardId)
+		.single() // Получаем карточку с конкретным id
+
+	if (error || !data) {
+		ctx.reply("Карточка не найдена.")
+		return
+	}
+
+	ctx.reply(`Карточка ${data.id}:\n${data.desc}`)
+})
+
 // Обработчик сообщений
 bot.on("message:text", async ctx => {
 	// Проверка, что сообщение пришло в личном чате
@@ -209,8 +303,8 @@ bot.on("message:text", async ctx => {
 			.from("posts") // Убедитесь, что у вас есть таблица 'posts'
 			.insert([
 				{
-          desc: userMessage, // Сообщение пользователя
-          userId: userId
+					desc: userMessage, // Сообщение пользователя
+					userId: userId,
 				},
 			])
 
