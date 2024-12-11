@@ -209,8 +209,8 @@ bot.on("message:text", async ctx => {
 			.from("posts") // Убедитесь, что у вас есть таблица 'posts'
 			.insert([
 				{
-					desc: userMessage, // Сообщение пользователя
-					id: userId, // ID пользователя
+          desc: userMessage, // Сообщение пользователя
+          userId: userId
 				},
 			])
 
