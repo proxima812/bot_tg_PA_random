@@ -215,7 +215,7 @@ bot.on("callback_query", async (ctx) => {
       const keyboard = new InlineKeyboard();
       cards.forEach((card) => {
         const shortDesc = card.desc.length > 30 ? `${card.desc.slice(0, 30)}...` : card.desc;
-        keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`).row();
+        keyboard.text(`Карточка ${card.id}: ${shortDesc}`, `view_card_${card.id}`)
         keyboard.text("🗑 Удалить", `delete_card_${card.id}`).row();
       });
 
