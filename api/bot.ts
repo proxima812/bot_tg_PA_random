@@ -1,5 +1,4 @@
 require("dotenv").config()
-import axios from "axios"
 import { Bot, InlineKeyboard, webhookCallback } from "grammy"
 const questions = require("../handlers/questions.js")
 const ideasWithEmojis = require("../handlers/ideasWithEmojis.js")
@@ -8,6 +7,11 @@ const quotes = require("../handlers/quotes.js")
 const js = require("../handlers/js.js")
 const bk = require("../handlers/bk.js")
 const tr = require("../handlers/tr.js")
+
+const supabase = createClient(
+	"https://fkwivycaacgpuwfvozlp.supabase.co", // URL вашего проекта Supabase
+	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZrd2l2eWNhYWNncHV3ZnZvemxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5MDc4MTEsImV4cCI6MjA0OTQ4MzgxMX0.44dYay0RWos4tqwuj6H-ylqN4TrAIabeQLNzBn6Xuy0", // Ваш ключ API Supabase
+)
 
 // Определяем массив традиций
 // const traditions = [
@@ -195,28 +199,30 @@ bot.on("message:text", async ctx => {
 		return // Прерываем выполнение, если не личный чат
 	}
 
-	const userMessage = ctx.message.text
-	const userId = ctx.message.from.id
+	const userMessage = ctx.message.text // Текст сообщения
+	const userId = ctx.message.from.id // ID пользователя
 
 	try {
-		const response = await axios.post(
-			"https://group12s.netlify.app/api/card", // URL вашего API
-			{
-				desc: userMessage,
-				id: userId,
-			},
-			{
-				headers: {
-          "Content-Type": "application/json",
+		// Вставка данных в Supabase
+		const { data, error } = await supabase
+			.from("posts") // Убедитесь, что у вас есть таблица 'posts'
+			.insert([
+				{
+					desc: userMessage, // Сообщение пользователя
+					id: userId, // ID пользователя
 				},
-			},
-		)
+			])
 
-		console.log("Ответ от сервера:", response.data) // Логирование ответа от сервера
+		if (error) {
+			console.error("Ошибка при добавлении записи в Supabase:", error.message)
+			ctx.reply("Произошла ошибка при добавлении карточки.")
+			return
+		}
 
+		console.log("Карточка добавлена с сообщением:", userMessage)
 		ctx.reply("Ваше сообщение было добавлено как карточка!")
 	} catch (error) {
-		console.error("Ошибка при отправке данных на сайт:", error)
+		console.error("Ошибка при работе с Supabase:", error)
 		ctx.reply("Произошла ошибка при добавлении карточки.")
 	}
 })
