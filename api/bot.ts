@@ -189,6 +189,12 @@ bot.callbackQuery("new_question", async ctx => {
 
 // Обработчик сообщений
 bot.on("message:text", async ctx => {
+	// Проверка, что сообщение пришло в личном чате
+	if (ctx.chat.type !== "private") {
+		console.log("Сообщение пришло из группы, игнорируем.")
+		return // Прерываем выполнение, если не личный чат
+	}
+
 	const userMessage = ctx.message.text
 	const userId = ctx.message.from.id
 
