@@ -165,9 +165,6 @@ bot.on("callback_query", async ctx => {
 		await ctx.answerCallbackQuery()
 		await ctx.reply(
 			"Чтобы добавить карточку, напишите команду<br>code>/add_card</br> https://t.me/КАНАЛ/НОМЕР_ПОСТА",
-			{
-				parse_mode: "HTML",
-			},
 		)
 	}
 
