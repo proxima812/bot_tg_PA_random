@@ -152,36 +152,60 @@ async function deleteCard(cardId) {
 bot.command('start', async (ctx) => {
 	const userId = ctx.from.id;
 
-	// Получаем карточки пользователя из Supabase
-	const cards = await getUserCards(userId);
-
-	// Если у пользователя нет карточек, сообщаем об этом
-	if (cards.length === 0) {
-		await ctx.reply("У вас нет карточек.");
-		return;
-	}
-
 	// Создаем клавиатуру
 	const keyboard = new InlineKeyboard();
 
-	// Добавляем кнопки для команд
-	keyboard.text('Добавить карточку', '/add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА');
-	keyboard.row();
-	keyboard.text('Посмотреть свои карточки', '/start');
+	// Добавляем кнопку "Добавить карточку"
+	keyboard.text('Добавить карточку', 'add_card');
 	keyboard.row();
 
-	// Добавляем кнопки для карточек
-	cards.forEach(card => {
-		keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`);
-		keyboard.row();
-		keyboard.text('Удалить', `delete_card_${card.id}`);
-		keyboard.row();
-	});
+	// Добавляем кнопку "Посмотреть свои карточки"
+	keyboard.text('Посмотреть свои карточки', 'view_cards');
+	keyboard.row();
 
 	// Отправляем сообщение с клавиатурой
-	await ctx.reply('Ваши карточки и доступные команды:', {
+	await ctx.reply('Выберите действие:', {
 		reply_markup: keyboard, // Передаем клавиатуру
 	});
+});
+
+// Обработчик нажатия на кнопку "Добавить карточку"
+bot.on('callback_query', async (ctx) => {
+	if (ctx.callbackQuery.data === 'add_card') {
+		// Ответ с инструкцией по добавлению карточки
+		await ctx.answerCallbackQuery();
+		await ctx.reply("Чтобы добавить карточку, напишите команду /add_card https://t.me/КАНАЛ/НОМЕР_ПОСТА");
+	}
+	
+	// Обработчик нажатия на кнопку "Посмотреть свои карточки"
+	if (ctx.callbackQuery.data === 'view_cards') {
+		const userId = ctx.from.id;
+
+		// Получаем карточки пользователя из Supabase
+		const cards = await getUserCards(userId);
+
+		// Если у пользователя нет карточек
+		if (cards.length === 0) {
+			await ctx.answerCallbackQuery();
+			await ctx.reply("У вас нет карточек.");
+			return;
+		}
+
+		// Создаем клавиатуру для отображения карточек
+		const keyboard = new InlineKeyboard();
+		cards.forEach(card => {
+			keyboard.text(`Карточка ${card.id}: ${card.desc}`, `view_card_${card.id}`);
+			keyboard.row();
+			keyboard.text('Удалить', `delete_card_${card.id}`);
+			keyboard.row();
+		});
+
+		// Отправляем сообщение с клавиатурой
+		await ctx.answerCallbackQuery();
+		await ctx.reply("Ваши карточки:", {
+			reply_markup: keyboard, // Передаем клавиатуру с карточками
+		});
+	}
 });
 
 // Обработчик нажатия на кнопки удаления
